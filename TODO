@@ -1,0 +1,27 @@
+TODO:
+====
+
+* Variance of intercept should be infered so that it learns to me more or less dogmatic.
+
+
+BUGS:
+====
+
+  * [1] Error in S_ar_[, , z] : subscript out of bounds
+    * Fix:  z_init cannot have gaps in the labels.
+
+  * [2] sample_b(). Lambda_post sometimes computationally singular
+    * Fix: add tryCatch and call use MASS::ginv() for those cases
+
+  * [3] sample_beta_a0() -> ars2.beta() -> beta.f_y(): 
+           Still some "Error in S[, , r] : subscript out of bounds"
+    * Fix: R <- dim(S)[1]  fixed to R <- dim(S)[3] (check python implementation too!)
+
+  * [4] sample_beta_a0() -> ars2.beta()
+    Error: Trap in ARS: Maximum number of attempts reached by routine spl1_
+	In addition: Warning message:
+	value out of range in 'lgamma' 
+    * Fix 1: tryCatch and use W=signif(W,1) if exception
+
+  * [5]
+
