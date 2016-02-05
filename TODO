@@ -1,8 +1,7 @@
 TODO:
 ====
 
-* Variance of intercept should be infered so that it learns to me more or less dogmatic.
-
+   * Plot posteriors of predictions
 
 BUGS:
 ====
@@ -23,5 +22,12 @@ BUGS:
 	value out of range in 'lgamma' 
     * Fix 1: tryCatch and use W=signif(W,1) if exception
 
-  * [5]
+   * [6]: Intercept does not move (sometimes).
+	Fix: do not use W_b0 and mu_b0 since they are sampled given the coefficients and we want the intercept to be independent.
 
+CHANGES
+=======
+
+   * Intercept is given its own prior independent of the rest of coefficients. Otherwise it will behave badly if coefficients have extremely low variance.
+   * Tried to re-use b in case of exeption, but doesn't fix anything.
+   * W_b0  fixed to 1 to avoid coupling during the MCMC where it tends to 0 while s_br goes to inf and coeffs in every cluster are more and more similar.

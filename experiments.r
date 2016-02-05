@@ -4,27 +4,27 @@
 # and evaluation of thread length predictions in the test set
 # author: Alberto Lumbreras
 #######################################################
-source('gibbs_dual.r')
-
-# Load data
-######################################
-# Choose one of the datasers
-dataset = 'confused_features'
-dataset = 'overlapped'
-dataset = 'iris'
-
-data.dir <- paste0('./data/', dataset, '/')
-df <- read.table(paste0(data.dir, 'data_users_50.csv'), sep='\t', header=TRUE)
-z_init <- df$z+1
-if(dataset=='iris'){
-  A <- t(df[,2:4])
-}else{
-  A <- t(df[,2:3])  
-}
-B <- t(df$b)
-
-# Run experiments for different number of threads in training
-for(nthreads.train in seq(30,100, by=10)){
+experiment <- function(nthreads.train){
+    source('gibbs_dual.r')
+  
+    # Load data
+    ######################################
+    # Choose one of the datasers
+    dataset = 'confused_features'
+    dataset = 'overlapped'
+    dataset = 'iris'
+    
+    data.dir <- paste0('./data/', dataset, '/')
+    df <- read.table(paste0(data.dir, 'data_users_50.csv'), sep='\t', header=TRUE)
+    z_init <- df$z+1
+    if(dataset=='iris'){
+      A <- t(df[,2:4])
+    }else{
+      A <- t(df[,2:3])  
+    }
+    B <- t(df$b)
+  
+  
     y <- read.table(paste0(data.dir, 'train_lengths_50.csv'), sep='\t', header=TRUE)
     P <- read.table(paste0(data.dir, 'train_participations_50.csv'), sep='\t', header=TRUE)
     nthreads <- dim(P)[2]
@@ -52,7 +52,7 @@ for(nthreads.train in seq(30,100, by=10)){
     
     # run !
     #############
-    res <- gibbs(A, B, P, y, z_init=z_init, iters=30000)
+    res <- gibbs(A, B, P, y, z_init=z_init, iters=5000)
     
     # Save traces to files
     #######################
@@ -75,3 +75,26 @@ for(nthreads.train in seq(30,100, by=10)){
       write.matrix(as.data.frame(res[[i]]), file=file.path(traces.path,tr.name))
     }
 }
+
+# Run experiments for different number of threads in training
+#for(nthreads.train in seq(90,100, by=10)){
+#  experiment(nthreads.train)
+#}
+
+library(doParallel)
+library(foreach)
+library(parallel)
+set.seed(2)
+# See how to use a progress bar with doSNOW
+#http://stackoverflow.com/questions/10903787/how-can-i-print-when-using-dopar
+if(TRUE){
+  cl<-makeCluster(5, outfile="")
+  registerDoParallel(cl)
+  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
+  foreach(i=seq(110,200, by=10), .packages = pck)%dopar%experiment(i)
+  stopCluster(cl)
+}
+
+#parLapply does not inherit environment
+# but does not need to load packages
+#parLapply(cl, list(10,20,30), experiment)

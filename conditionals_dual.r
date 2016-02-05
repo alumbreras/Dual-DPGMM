@@ -180,24 +180,25 @@ sample_z_dual <- function(u, A, B, alpha, z,
 
 
 sample_b <- function(P, y, z, intercept, mu_ar, S_ar, s_y=10){
-  mu_ar_ <- mu_ar
-  S_ar_ <- S_ar
-  
   nthreads <- dim(P)[2]
   P <- as.matrix(P)
-  Lambda_post <- diag(S_ar_[,,z]) + P%*%diag(rep(s_y, nthreads))%*%t(P)  
+  Lambda_post <- diag(S_ar[,,z]) + P%*%diag(rep(s_y, nthreads))%*%t(P)  
   
   # be aware of computationally singular matrices
-  Sigma_post <- tryCatch(solve(Lambda_post), error=function(e){print(e);ginv(Lambda_post)} )
-    
-  mu_post <- Sigma_post%*%(as.matrix(S_ar_[z]*mu_ar_[z]) + s_y*(P%*%as.matrix(y-intercept)))
+  #Sigma_post <- tryCatch(solve(Lambda_post), 
+  #                       error=function(e){
+  #                         print(e);
+  #                         print(s_y)
+  #                         cat("\nCalling ginv")
+  #                         return(ginv(Lambda_post))} )
+  Sigma_post <- solve(Lambda_post) 
+  mu_post <- Sigma_post%*%(as.matrix(S_ar[z]*mu_ar[z]) + s_y*(P%*%as.matrix(y-intercept)))
   return(t(mvrnorm(mu=mu_post, Sigma=Sigma_post)))
 }
 
 
-sample_intercept <- function(P, y, z, B, mu_ar, S_ar, s_y=10){
+sample_intercept <- function(P, y, z, B, mu_ar, S_ar, s_y){
   b <- t(B)
-  #interc.prior.var <- 100
   offsets <- (y-t(P)%*%b)
   nthreads <- dim(P)[2]
   P <- as.matrix(P)  
@@ -208,18 +209,9 @@ sample_intercept <- function(P, y, z, B, mu_ar, S_ar, s_y=10){
 }
 
 
-sample.intercept.prior_prec <- function(){
-  # sample interc.prior.prec
-  beta_a0+1
-  gamma_dof_post <- beta_a0 + 1
-  gamma_s_post <- solve(beta_a0*w_a0 + (intercept-interc.prior.mean)^2)
-  return(rgamma(1, gamma_dof_post/2, scale=2*gamma_s_post))
-}
-
-
-
 sample_noise_inv <- function(P, y, B, variance_y){
-  # Sample the noise (its precision) inherent in threads length (y_t = p^t b + N(0, 1/s_y)) 
+  # Sample the noise (its precision) inherent in threads length (y_t = p^t b + N(0, 1/s_y))
+  # params gamma(1, var_y
   b <- t(B)
   nthreads <- dim(P)[2]
   gamma_dof_post <- nthreads + 1
@@ -323,7 +315,7 @@ sample_W_a0 <- function(Lambda_a, S_ar, beta_a0){
     K <- dim(S_ar)[3]
     D <- dim(S_ar)[1]
     # TODO: why apply does not work properly?
-    scatter_matrix <- apply(S_ar, 3, sum)
+    #scatter_matrix <- apply(S_ar, 3, sum)
     scatter_matrix <- 0
     for (i in 1:dim(S_ar)[3]){
       scatter_matrix <- scatter_matrix + S_ar[,,i]

@@ -1,14 +1,14 @@
 # Checks MCMC traces of a given experiment
 #
-# author: Alberto Luumbreras
+# author: Alberto Luubreras
 ##########################
 # http://www.people.fas.harvard.edu/~plam/teaching/methods/convergence/convergence_print.pdf
 library(coda)
 library(ggplot2)
 library(reshape2)
 
-traces.dir <- "./out/iris/DP_threads_30-1"
-burn <- 1000 # burned samples
+traces.dir <- "./out/iris/DP_threads_110-1"
+burn <- 2000 # burned samples
 
 # Read trace files
 files <- list.files(path = traces.dir, pattern = ".trc", recursive=T, full.names = T)
@@ -23,10 +23,11 @@ nclusters <- apply(traces[['z']], 1, function(x) {length(unique(x))})
 
 # Plot traces, densities, autocorrelations and Geweke's test for each variabl
 # but z and coefficients
-traces[['a']]<- traces[['a']][-1]
-traces[['b']]<- traces[['b']][-1]
-df.traces <- cbind(traces[['alpha']], traces[['intercept']], traces[['noise_inv']], traces[['a']], traces[['b']])
+traces[['a']]<- traces[['a']][-1] #-1 to ignore the n_clusters column
+traces[['b']]<- traces[['b']][-1]  #-1 to ignore the n_clusters column
+df.traces <- cbind(traces[['alpha']], traces[['intercept']], 1/(traces[['noise_inv']]), traces[['a']], traces[['b']])
 par(mfrow=c(3,4))
+par(mfrow=c(3,3)) # no geweke
 for (i in 1:ncol(df.traces)){
   varname <- names(df.traces)[i]
   df <- data.frame(df.traces[,i])
@@ -35,54 +36,56 @@ for (i in 1:ncol(df.traces)){
   
   # Chain and density plots
   plot(chain, auto.layout = FALSE)
-  
+
+  # Drop the burn-in samplines
+  chain[-c(1:burn),]
   # Autocorrelation plot
   autocorr.plot(chain, auto.layout = FALSE)
   ess <- effectiveSize(chain)
-  autocorrelation_time <- (10000-burn)/ess
+  autocorrelation_time <- nrow(chain)/ess
   title(varname)
   
   # Geweke z-score
-  tryCatch(geweke.plot(chain, auto.layout = FALSE), error=function(e) plot(1,1))
+  #tryCatch(geweke.plot(chain, auto.layout = FALSE), error=function(e) plot(1,1))
   
   cat(varname, ess, autocorrelation_time, "\n")
 }
 
-
-# Report all autocorrelations in a single plot
-par(mfrow=c(1,1))
-df.temp <- df.traces[,c('alpha', 'mean_mu_a0', 
-                        'det.R_a0.', 'det.W_a0.', 'beta_a', 
-                        'det.R_b0.', 'det.W_b0.', 'beta_b')]
-
-# Prettier without mean_mu_a0
-df.temp <- df.traces[,c('alpha', 
-                        'det.R_a0.', 'det.W_a0.', 'beta_a', 
-                        'det.R_b0.', 'det.W_b0.', 'beta_b')]
-df.ac <- data.frame(matrix(NA, nrow=1001, ncol=ncol(df.temp)))
-names(df.ac) <- names(df.temp)
-for (i in 1:(ncol(df.temp))){
-  df.ac[,i] <- c(acf(df.temp[,i], plot=FALSE, lag.max =1000)$acf)
+if(TRUE){
+  # Report all autocorrelations in a single plot
+  par(mfrow=c(1,1))
+  df.temp <- df.traces[,c('alpha', 'mean_mu_a0', 
+                          'det.R_a0.', 'det.W_a0.', 'beta_a', 
+                          'det.R_b0.', 'det.W_b0.', 'beta_b')]
+  
+  # Prettier without mean_mu_a0
+  df.temp <- df.traces[,c('alpha', 
+                          'det.R_a0.', 'det.W_a0.', 'beta_a', 
+                          'det.R_b0.', 'det.W_b0.', 'beta_b')]
+  df.ac <- data.frame(matrix(NA, nrow=1001, ncol=ncol(df.temp)))
+  names(df.ac) <- names(df.temp)
+  for (i in 1:(ncol(df.temp))){
+    df.ac[,i] <- c(acf(df.temp[,i], plot=FALSE, lag.max =1000)$acf)
+  }
+  
+  df.ac$lag <- 1:nrow(df.ac) # insert lag variable
+  df.ac <- melt(df.ac, id='lag')
+  
+  p1 <- ggplot(df.ac, aes(x=lag, y=value, color=variable, linetype=variable))
+  p1 <- p1 + geom_line(aes(y=value)) # add lines
+  p1 <- p1 + geom_point(data=df.ac[seq(1,nrow(df.ac), by=50),], aes(shape=variable), size = 3) # add shape points
+  
+  p1 <- p1 + theme(panel.background = element_blank(), 
+                   panel.grid.major = element_blank(),
+                   panel.grid.minor = element_blank(),
+                   axis.line = element_line(colour = "black"),
+                   legend.key = element_blank(),
+                   legend.title =  element_blank(),
+                   aspect.ratio = 4/10,
+                   legend.position=c(0.9, 0.7))
+  p1 <- p1 + ylab("Autocorrelation")
+  print(p1)
 }
-
-df.ac$lag <- 1:nrow(df.ac) # insert lag variable
-df.ac <- melt(df.ac, id='lag')
-
-p1 <- ggplot(df.ac, aes(x=lag, y=value, color=variable, linetype=variable))
-p1 <- p1 + geom_line(aes(y=value)) # add lines
-p1 <- p1 + geom_point(data=df.ac[seq(1,nrow(df.ac), by=50),], aes(shape=variable), size = 3) # add shape points
-
-p1 <- p1 + theme(panel.background = element_blank(), 
-                 panel.grid.major = element_blank(),
-                 panel.grid.minor = element_blank(),
-                 axis.line = element_line(colour = "black"),
-                 legend.key = element_blank(),
-                 legend.title =  element_blank(),
-                 aspect.ratio = 4/10,
-                 legend.position=c(0.9, 0.7))
-p1 <- p1 + ylab("Autocorrelation")
-print(p1)
-
 
 # Plot z traces in a different way
 par(mfrow=c(1,1))

@@ -1,6 +1,6 @@
 # Dual clustering of users
 # author: Alberto Lumbreras
-
+###############################
 library(abind)
 library(coda)
 library(mixtools)
@@ -9,7 +9,17 @@ source('conditionals_dual.r')
 source('ars_alpha.r')
 source('ars_beta.r')
 
-PLOTS <- TRUE
+
+# For debugging, this is useful:
+if(FALSE){
+  plot(mcmc(traces.b[complete.cases(traces.b),]))
+  plot(mcmc(1/traces.noise_inv[complete.cases(traces.noise_inv),]))
+  plot(mcmc(1/traces.intercept[complete.cases(traces.intercept),]))
+  plot(mcmc(traces.coefficients[complete.cases(traces.coefficients),1:10]))
+}
+
+PLOTS <- FALSE
+PLOTS.FREQUENCY <- 10 # iterations between two plots
 data(iris)
 data(geyser)
 
@@ -46,7 +56,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
   # traces
   traces.z <- matrix(NA, iters, N)
   traces.coefficients <- matrix(NA, iters, N)
-  traces.intercept <- matrix(NA, iters, 1)
+  traces.intercept <- matrix(NA, iters, 3)
   traces.alpha <- matrix(NA, iters, 1)
   traces.a <- matrix(NA, iters, 5)
   traces.b <- matrix(NA, iters, 5)
@@ -56,8 +66,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
   colnames(traces.b) <- c("n_clusters", "mean_mu_b0", "det(R_b0)", "det(W_b0)", "beta_b")
   colnames(traces.alpha) <- c("alpha")
   colnames(traces.noise_inv) <- c("noise_inv")
-  colnames(traces.intercept) <- c("intercept")
-  
+  colnames(traces.intercept) <- c("intercept", "mu_intercept", "s_intercept")
   
   # data mean and covariance
   # used to centers priors on the data
@@ -134,9 +143,9 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
       beta_a0 <- sample_beta_a0(S_ar[,,1:K, drop=FALSE], W_a0, init=beta_a0)
       traces.a[i,] <- c(length(unique(z)), mean(mu_a0), det(R_a0), det(W_a0), beta_a0)
       
-      if(PLOTS){
+      if(PLOTS && (i%%PLOTS.FREQUENCY==0)){
         plot(t(A[c(1,2),]), col=palette()[z+1])
-        title("Features")
+        title(paste("Features", i))
         for(k in 1:K){
           ellipse(mu=mu_a0[c(1,2)], sigma=W_a0[c(1,2),c(1,2)], alpha = .25, lwd=5, npoints = 250, col="black")
           ellipse(mu=mu_ar[c(1,2),k], sigma=solve(S_ar[c(1,2),c(1,2),k]),  alpha = .25, lwd=3, npoints = 250, col=palette()[k+1])
@@ -152,16 +161,18 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
         for (k in 1:length(unique(z))){
           mask <- (z==k)
           S_br[,,k] <- sample_S_ar(B[,mask, drop=FALSE], mu_br[,k, drop=FALSE], beta_b0, W_b0)
+          #S_br[,,k] <- sample_S_ar(B[,mask, drop=FALSE], mu_br[,k, drop=FALSE], beta_b0, as.matrix(1))
           mu_br[,k] <- sample_mu_ar(B[,mask, drop=FALSE], S_br[,,k], mu_b0, R_b0)
+          #if(abs(mu_br[,k]) < 0.0001){stop("bad mu_br")}
         }
         # Intercept has its own "component" parameters
-        s_intercept <- sample_S_ar(as.matrix(intercept), as.matrix(mu_intercept), beta_b0, W_b0)
-        mu_intercept <- sample_mu_ar(as.matrix(intercept), as.matrix(s_intercept), mu_b0, R_b0)
+        s_intercept <- sample_S_ar(as.matrix(intercept), as.matrix(mu_intercept), 1, 1)
+        mu_intercept <- sample_mu_ar(as.matrix(intercept), as.matrix(s_intercept), 0, 1)
         
         # Sample hyperpriors
         mu_b0 <- sample_mu_a0(Lambda_b, mu_b, mu_br[,1:K, drop=FALSE], R_b0)
         R_b0 <- sample_R_a0(Sigma_b, mu_br[,1:K, drop=FALSE], mu_b0) 
-        W_b0 <- sample_W_a0(Lambda_b, S_br[,,1:K, drop=FALSE], beta_b0)
+        W_b0 <- as.matrix(1) #sample_W_a0(Lambda_b, S_br[,,1:K, drop=FALSE], beta_b0)
         beta_b0 <- sample_beta_a0(S_br[,,1:K, drop=FALSE], W_b0, init=beta_b0)
         
         # This part is the only difference between the behavior view and the feature view
@@ -169,16 +180,26 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
         # Sample latent coefficients
         # Sample intercept from a gaussian prior with mean 0 and flat variance
         #noise_inv <- 100
-        B <- sample_b(P, y, z, intercept, mu_br[,1:K, drop=FALSE], S_br[,,1:K, drop=FALSE], s_y=noise_inv)
+        #B <- sample_b(P, y, z, intercept, mu_br[,1:K, drop=FALSE], S_br[,,1:K, drop=FALSE], s_y=noise_inv)
+        B <- tryCatch(sample_b(P, y, z, intercept, mu_br[,1:K, drop=FALSE], S_br[,,1:K, drop=FALSE], s_y=noise_inv),
+                      error=function(e){
+                        cat(paste("sample_b(): ", e))
+                        return(B)
+                      }
+            )
+
         intercept <- sample_intercept(P, y, z, B, mu_intercept, s_intercept, s_y=noise_inv)
         noise_inv <- sample_noise_inv(P, y, B, variance_y)
+        #if(1/noise_inv>100) stop("bad noise_inv")
+        cat("\nintercept:", intercept, "\tnoise:", 1/noise_inv, "W_b0:", W_b0)
+  
         
         traces.b[i,] <- c(length(unique(z)), mean(mu_b0), det(R_b0), det(W_b0), beta_b0)
-        traces.intercept[i,] <- intercept
+        traces.intercept[i,] <- c(intercept, mu_intercept, s_intercept)
         traces.coefficients[i,] <- c(B)
         traces.noise_inv[i,] <- noise_inv
         
-        if(PLOTS){
+        if(PLOTS && (i%%PLOTS.FREQUENCY==0)){
           plot(t(B), col=palette()[z+1])
           title("Behaviors")
           
@@ -226,6 +247,8 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
           cat(z[u])
           stop("Some cluster is not being used")
         }
+        #z <- rep(1, length(z)) # debug
+
       }
       
       K <- length(unique(z))
@@ -251,7 +274,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
 }
 
 
-if(TRUE){
+if(FALSE){
   
   # Load data
   ######################################

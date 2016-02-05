@@ -45,7 +45,9 @@ least_squares_clustering <- function(traces_z, pairwise){
   return(best_sample)
 }
 
-burnin <- 7000
+###################################
+par(mfrow=c(3,3))
+burnin <- 2500
 # Load test set
 dataset <- 'iris'
 P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
@@ -54,7 +56,7 @@ z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t'
 
 # Get prediction samples for P_test and compute negative loglikelihood by comparing the predictions
 # with the y_test
-experiments <- list.files(path = file.path("out", dataset), recursive=F, full.names = T)
+experiments <- list.dirs(path = file.path("out", dataset), recursive=F, full.names = T)
 for (i in 1:length(experiments)){
   traces.path <- file.path(experiments[i], 'traces')
   traces_coefficients <- read.csv(file.path(traces.path, 'traces.coefficients.trc'), sep='')[-c(1:burnin),]
@@ -86,7 +88,7 @@ for (i in 1:length(experiments)){
   model <- strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][1]
   nthreads <- strsplit(strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][3], "-")[[1]][1]
   write.table(t(c(model, nthreads, negloglike, ari)), 
-              file="results.csv", sep='\t', col.names=FALSE, row.names=FALSE, append=TRUE)
+              file=file.path("out", dataset, "results.csv"), sep='\t', col.names=FALSE, row.names=FALSE, append=TRUE)
   
   
 }
