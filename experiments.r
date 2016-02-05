@@ -52,7 +52,7 @@ experiment <- function(nthreads.train){
     
     # run !
     #############
-    res <- gibbs(A, B, P, y, z_init=z_init, iters=5000)
+    res <- gibbs(A, B, P, y, z_init=z_init, iters=30000)
     
     # Save traces to files
     #######################
@@ -84,17 +84,14 @@ experiment <- function(nthreads.train){
 library(doParallel)
 library(foreach)
 library(parallel)
-set.seed(2)
+
 # See how to use a progress bar with doSNOW
 #http://stackoverflow.com/questions/10903787/how-can-i-print-when-using-dopar
+
 if(TRUE){
   cl<-makeCluster(5, outfile="")
   registerDoParallel(cl)
   pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=seq(110,200, by=10), .packages = pck)%dopar%experiment(i)
+  foreach(i=seq(10,20, by=10), .packages = pck)%dopar%experiment(i)
   stopCluster(cl)
 }
-
-#parLapply does not inherit environment
-# but does not need to load packages
-#parLapply(cl, list(10,20,30), experiment)
