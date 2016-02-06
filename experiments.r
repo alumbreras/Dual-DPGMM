@@ -11,8 +11,9 @@ experiment <- function(nthreads.train){
     ######################################
     # Choose one of the datasers
     dataset = 'confused_features'
-    dataset = 'overlapped'
     dataset = 'iris'
+    dataset = 'clear'
+    dataset = 'overlapped'
     
     data.dir <- paste0('./data/', dataset, '/')
     df <- read.table(paste0(data.dir, 'data_users_50.csv'), sep='\t', header=TRUE)
@@ -89,9 +90,9 @@ library(parallel)
 #http://stackoverflow.com/questions/10903787/how-can-i-print-when-using-dopar
 
 if(TRUE){
-  cl<-makeCluster(5, outfile="")
+  cl<-makeCluster(6, outfile="")
   registerDoParallel(cl)
   pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=seq(10,20, by=10), .packages = pck)%dopar%experiment(i)
+  foreach(i=seq(10,100, by=10), .packages = pck)%dopar%experiment(i)
   stopCluster(cl)
 }

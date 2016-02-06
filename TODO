@@ -24,7 +24,15 @@ BUGS:
 
    * [6]: Intercept does not move (sometimes).
 	Fix: do not use W_b0 and mu_b0 since they are sampled given the coefficients and we want the intercept to be independent.
+   
+  * [7] Error in unserialize(node$con) : error reading from connection
+	Calls: <Anonymous> ... doTryCatch -> recvData -> recvData.SOCKnode -> unserialize
+	In addition: Warning message:
+	In file(filename, "r", encoding = encoding) :
+	  cannot open file 'gibbs_dual.r': No such file or directory
+	Execution halted
 
+	Fix? memory issues? should
 CHANGES
 =======
 

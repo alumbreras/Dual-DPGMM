@@ -7,7 +7,7 @@ library(coda)
 library(ggplot2)
 library(reshape2)
 
-traces.dir <- "./out/iris/DP_threads_110-1"
+traces.dir <- "./out/iris/DP_threads_10-1"
 burn <- 2000 # burned samples
 
 # Read trace files
@@ -46,7 +46,7 @@ for (i in 1:ncol(df.traces)){
   title(varname)
   
   # Geweke z-score
-  #tryCatch(geweke.plot(chain, auto.layout = FALSE), error=function(e) plot(1,1))
+  tryCatch(geweke.plot(chain, auto.layout = FALSE), error=function(e) plot(1,1))
   
   cat(varname, ess, autocorrelation_time, "\n")
 }

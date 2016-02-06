@@ -269,9 +269,9 @@ plot.real.data <- function(A, b, z){
 ##########################################################
 # Main
 ##########################################################
-if (FALSE){
+if (TRUE){
   generators <- c(clear, confused_features, overlapped)
-  gen <- generators[[2]] # chose one of the three scenarios
+  gen <- generators[[3]] # chose one of the three scenarios
   
   # Generate and plot the data
   i = 50 # number of users
@@ -291,7 +291,7 @@ if (FALSE){
   save.participations(parts$P,parts$y, suffix="test")
 }
 
-if (TRUE){
+if (FALSE){
   # Generate a dataset that reproduces the Iris dataset structure
   # s_y adapted to the size of b so that the noise is reasonable
   data <- real()

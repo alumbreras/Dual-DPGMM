@@ -282,9 +282,10 @@ if(FALSE){
   dataset = 'confused_features'
   dataset = 'overlapped'
   dataset = 'iris'
+  dataset = 'clear'
 
   # Number of threads used for training
-  nthreads.train <- 100
+  nthreads.train <- 20
   
   # Load dataset
   data.dir <- paste0('./data/', dataset, '/')

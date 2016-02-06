@@ -6,14 +6,9 @@ library(grid)
 library(gridExtra)
 options(warn=1)
 
-# Get all the experiments with 50 users
-
-# consensus between views
-
-path <- "./overlapped/" 
-path <- file.path("out", "iris")
-
-U <- 50
+dataset <- 'iris'
+dataset <- 'clear'
+path <- file.path("out", dataset)
 
 # one view sees 4, the other sees 5 clusters
 files.name <- list.files(path=path, pattern=".csv", recursive=TRUE, full.names=TRUE)

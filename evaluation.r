@@ -47,9 +47,10 @@ least_squares_clustering <- function(traces_z, pairwise){
 
 ###################################
 par(mfrow=c(3,3))
-burnin <- 2500
+burnin <- 100
 # Load test set
 dataset <- 'iris'
+dataset <- 'clear'
 P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
 y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y
 z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t')$z
