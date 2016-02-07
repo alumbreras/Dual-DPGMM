@@ -26,7 +26,8 @@ clear <- function(U=100, R=5){
   }
   
   # Assign behavior coefficients
-  mu_br <- seq(-200,200, length.out=R)
+  #mu_br <- seq(-200,200, length.out=R) #works ok
+  mu_br <- seq(0,200, length.out=R)
   b <- rep(0, U)
   for(r in 1:R){
    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=8)
@@ -37,8 +38,34 @@ clear <- function(U=100, R=5){
        z=z)
 }
 
+agreement <- function(U=100, R=10){
+  F <- 2
+  # Assign roles uniformly
+  z <- sort(rep(1:R, length=U))
+  
+  # Assign features
+  A <- matrix(1, F, U)
+  for(r in 1:R){
+    x = 0.45*cos(2*pi*r/R)
+    y = 0.45*sin(2*pi*r/R)
+    cat(x,y,"\n")
+    A[,z==r] <- t(mvrnorm(n=sum(z==r), mu=c(x,y), Sigma=cov))
+  }
+  
+  # Assign behavior coefficients
+  mu_br <- seq(0,100, length.out=R)
+  b <- rep(0, U)
+  for(r in 1:R){
+    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=5)
+  }
+  
+  list(A=A,
+       b=b,
+       z=z)
+}
 
-confused_features <- function(U=100, R=10){
+
+disagreement <- function(U=100, R=10){
   F <- 2
 
   # Assign roles uniformly
@@ -74,31 +101,7 @@ confused_features <- function(U=100, R=10){
 }
 
 
-overlapped <- function(U=100, R=10){
-  F <- 2
-  # Assign roles uniformly
-  z <- sort(rep(1:R, length=U))
-  
-  # Assign features
-  A <- matrix(1, F, U)
-  for(r in 1:R){
-    x = 0.3*cos(2*pi*r/R)
-    y = 0.3*sin(2*pi*r/R)
-    cat(x,y,"\n")
-    A[,z==r] <- t(mvrnorm(n=sum(z==r), mu=c(x,y), Sigma=cov))
-  }
-  
-  # Assign behavior coefficients
-  mu_br <- seq(-50,50, length.out=R)
-  b <- rep(0, U)
-  for(r in 1:R){
-    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=8)
-  }
-  
-  list(A=A,
-       b=b,
-       z=z)
-}
+
 
 real <- function(){
   data(iris)
@@ -270,7 +273,7 @@ plot.real.data <- function(A, b, z){
 # Main
 ##########################################################
 if (TRUE){
-  generators <- c(clear, confused_features, overlapped)
+  generators <- c(clear, disagreement, agreement)
   gen <- generators[[3]] # chose one of the three scenarios
   
   # Generate and plot the data

@@ -9,22 +9,13 @@ sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){
     # Chinese Restaurant Process with auxiliary tables (Neal's algorithm 8)
     # 
     m <- 3 # number of auxiliary tables to approximate the infinite number of empty tables
+    if(alpha==0) {m=0} # in case of no DP
+    
     n <- tabulate(z)
     K <- length(unique(z))
     D <- dim(A)[1]
     R_a0_inv <- solve(R_a0)
     W_a0_inv <- solve(W_a0)
-    
-    # Create m auxiliary tables from the base distribution
-    aux.tables.mean <- t(mvrnorm(m, mu_a0, R_a0_inv))
-    aux.tables.covariance <-  rWishart(m, max(beta_a0,D), W_a0/beta_a0)
-    
-    # If last point in cluster, re-use its parameters for the auxiliary table so that
-    # it has some probability of staying 
-    if (n[z[u]]==1){
-      aux.tables.mean[,1] <- mu_ar[,z[u], drop=FALSE]
-      aux.tables.covariance[,,1] <- S_ar[,,z[u]]
-    }
 
     # Compute likelihood for every table
     logprobs <- rep(NA, K+m)
@@ -33,10 +24,25 @@ sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){
       logp <- logp + mvtnorm::dmvnorm(A[,u], mean=mu_ar[,k,drop=FALSE], sigma=solve(S_ar[,,k]), log=TRUE)
       logprobs[k] <- logp 
     }
-    for(k in 1:m){
-      logp <- log(alpha/m)
-      logp <- logp + mvtnorm::dmvnorm(A[,u], mean=aux.tables.mean[,k], sigma=as.matrix(aux.tables.covariance[,,k]), log=TRUE)
-      logprobs[K+k] <- logp 
+    if(m>0){
+      
+      # Create m auxiliary tables from the base distribution
+      aux.tables.mean <- t(mvrnorm(m, mu_a0, R_a0_inv))
+      aux.tables.covariance <-  rWishart(m, max(beta_a0,D), W_a0/beta_a0)
+      
+      # If last point in cluster, re-use its parameters for the auxiliary table so that
+      # it has some probability of staying 
+      if (n[z[u]]==1){
+        aux.tables.mean[,1] <- mu_ar[,z[u], drop=FALSE]
+        aux.tables.covariance[,,1] <- S_ar[,,z[u]]
+      }
+      
+      # Compute likelihood for auxilary table
+      for(k in 1:m){
+        logp <- log(alpha/m)
+        logp <- logp + mvtnorm::dmvnorm(A[,u], mean=aux.tables.mean[,k], sigma=as.matrix(aux.tables.covariance[,,k]), log=TRUE)
+        logprobs[K+k] <- logp 
+      }
     }
     
     # normalize probabilities to avoid numerical underflow
@@ -92,6 +98,8 @@ sample_z_dual <- function(u, A, B, alpha, z,
   # Chinese Restaurant Process with auxiliary tables (Neal's algorithm 8)
   # 
   m <- 3 # number of auxiliary tables to approximate the infinite number of empty tables
+  if(alpha==0) {m=0} # in case of no DP
+
   n <- tabulate(z)
   K <- length(unique(z))
   D.a <- dim(A)[1]
@@ -101,20 +109,7 @@ sample_z_dual <- function(u, A, B, alpha, z,
   R_b0_inv <- solve(R_b0)
   W_b0_inv <- solve(W_b0)
   
-  # Create m auxiliary tables from the base distribution
-  aux.tables.mean.a <- t(mvrnorm(m, mu_a0, R_a0_inv))
-  aux.tables.covariance.a <-  rWishart(m, max(beta_a0,D.a), W_a0/beta_a0)
-  aux.tables.mean.b <- t(mvrnorm(m, mu_b0, R_b0_inv))
-  aux.tables.covariance.b <-  rWishart(m, max(beta_b0,D.b), W_b0/beta_b0)
-  
-  # If last point in cluster, re-use its parameters for the auxiliary table so that
-  # it has some probability of staying 
-  if (n[z[u]]==1){
-    aux.tables.mean.a[,1] <- mu_ar[,z[u], drop=FALSE]
-    aux.tables.covariance.a[,,1] <- S_ar[,,z[u]]
-    aux.tables.mean.b[,1] <- mu_br[,z[u], drop=FALSE]
-    aux.tables.covariance.b[,,1] <- S_br[,,z[u]]    
-  }
+
   
   # Compute likelihood for every table
   logprobs <- rep(NA, K+m)
@@ -124,11 +119,31 @@ sample_z_dual <- function(u, A, B, alpha, z,
     logp <- logp + mvtnorm::dmvnorm(B[,u], mean=mu_br[,k,drop=FALSE], sigma=solve(S_br[,,k]), log=TRUE)    
     logprobs[k] <- logp 
   }
-  for(k in 1:m){
-    logp <- log(alpha/m)
-    logp <- logp + mvtnorm::dmvnorm(A[,u], mean=aux.tables.mean.a[,k], sigma=as.matrix(aux.tables.covariance.a[,,k]), log=TRUE)
-    logp <- logp + mvtnorm::dmvnorm(B[,u], mean=aux.tables.mean.b[,k], sigma=as.matrix(aux.tables.covariance.b[,,k]), log=TRUE)
-    logprobs[K+k] <- logp 
+  
+  if(m>0){
+    
+    # Create m auxiliary tables from the base distribution
+    aux.tables.mean.a <- t(mvrnorm(m, mu_a0, R_a0_inv))
+    aux.tables.covariance.a <-  rWishart(m, max(beta_a0,D.a), W_a0/beta_a0)
+    aux.tables.mean.b <- t(mvrnorm(m, mu_b0, R_b0_inv))
+    aux.tables.covariance.b <-  rWishart(m, max(beta_b0,D.b), W_b0/beta_b0)
+    
+    # If last point in cluster, re-use its parameters for the auxiliary table so that
+    # it has some probability of staying 
+    if (n[z[u]]==1){
+      aux.tables.mean.a[,1] <- mu_ar[,z[u], drop=FALSE]
+      aux.tables.covariance.a[,,1] <- S_ar[,,z[u]]
+      aux.tables.mean.b[,1] <- mu_br[,z[u], drop=FALSE]
+      aux.tables.covariance.b[,,1] <- S_br[,,z[u]]    
+    }    
+    
+    # Compute likelihood fro auxiliary tables
+    for(k in 1:m){
+      logp <- log(alpha/m)
+      logp <- logp + mvtnorm::dmvnorm(A[,u], mean=aux.tables.mean.a[,k], sigma=as.matrix(aux.tables.covariance.a[,,k]), log=TRUE)
+      logp <- logp + mvtnorm::dmvnorm(B[,u], mean=aux.tables.mean.b[,k], sigma=as.matrix(aux.tables.covariance.b[,,k]), log=TRUE)
+      logprobs[K+k] <- logp 
+    }
   }
   
   # normalize probabilities to avoid numerical underflow

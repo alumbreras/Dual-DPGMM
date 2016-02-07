@@ -4,17 +4,11 @@
 # and evaluation of thread length predictions in the test set
 # author: Alberto Lumbreras
 #######################################################
-experiment <- function(nthreads.train){
+experiment <- function(nthreads.train, dataset, model, nsamples, K=5){
     source('gibbs_dual.r')
-  
+    
     # Load data
     ######################################
-    # Choose one of the datasers
-    dataset = 'confused_features'
-    dataset = 'iris'
-    dataset = 'clear'
-    dataset = 'overlapped'
-    
     data.dir <- paste0('./data/', dataset, '/')
     df <- read.table(paste0(data.dir, 'data_users_50.csv'), sep='\t', header=TRUE)
     z_init <- df$z+1
@@ -24,7 +18,6 @@ experiment <- function(nthreads.train){
       A <- t(df[,2:3])  
     }
     B <- t(df$b)
-  
   
     y <- read.table(paste0(data.dir, 'train_lengths_50.csv'), sep='\t', header=TRUE)
     P <- read.table(paste0(data.dir, 'train_participations_50.csv'), sep='\t', header=TRUE)
@@ -53,12 +46,27 @@ experiment <- function(nthreads.train){
     
     # run !
     #############
-    res <- gibbs(A, B, P, y, z_init=z_init, iters=30000)
-    
+    if(model=="DP"){
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples)
+    }
+    if(model=="fixed"){
+      z_init <- kmeans(t(A), K)$cluster
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
+    }
+    if(model=="single"){
+      # Not implemented yed/
+      # In the paper, z=1 for all and not sample z (1 cluster)
+      # We should try with CRP in the regression model
+      # but likelihood co,puted only with coefficients
+      # sample_z and pass behavior view params
+      z_init <- kmeans(t(A), K)$cluster
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
+    }
+
     # Save traces to files
     #######################
     # do not overwrite old experiments
-    experiment.path <- file.path("out", dataset, paste0("DP_threads_",nthreads.train))
+    experiment.path <- file.path("out", dataset, paste0(model, "_threads_", nthreads.train, "_", nsamples))
     i <- 1
     while(TRUE){
       if(dir.exists(paste0(experiment.path, '-', i))){
@@ -77,22 +85,23 @@ experiment <- function(nthreads.train){
     }
 }
 
-# Run experiments for different number of threads in training
-#for(nthreads.train in seq(90,100, by=10)){
-#  experiment(nthreads.train)
-#}
-
 library(doParallel)
 library(foreach)
 library(parallel)
 
-# See how to use a progress bar with doSNOW
-#http://stackoverflow.com/questions/10903787/how-can-i-print-when-using-dopar
+# Choose one of the datasers
+dataset = 'confused_features'
+dataset = 'iris'
+dataset = 'clear'
+dataset <- 'agreement'
 
+model <- 'DP'
+nsamples <- 20000
+i.seq <- rep(seq(10,100, by=10), 3)
 if(TRUE){
-  cl<-makeCluster(6, outfile="")
+  cl<-makeCluster(7, outfile="")
   registerDoParallel(cl)
   pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=seq(10,100, by=10), .packages = pck)%dopar%experiment(i)
+  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
   stopCluster(cl)
 }

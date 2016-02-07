@@ -4,23 +4,7 @@
 # store the results in a csv file. 
 # author: Alberto Lumbreras
 
-library(mclust) # contains an ARI function
-
-loglike <- function(y_test, P_test, traces_coefficients, traces_intercept, traces_noise_inv){
-  n_sample = dim(traces_coefficients)[1]
-  loglike = 0
-  locs <-  t(P_test) %*% t(traces_coefficients) # y_pred without intercept
-  locs <- t(apply(locs, 1, function(x) x+t(traces_intercept))) # add intercept 
-  sd_noise = 1/sqrt(traces_noise_inv)
-  for(j in 1:n_sample){
-    loglike <- loglike + sum(dnorm(y_test, 
-                                   mean = locs[,j],
-                                   sd = sd_noise[j],
-                                   log=TRUE)
-    )
-  }
-  1.0*loglike/(n_sample*length(y_test))
-}
+source('R/metrics.r')
 
 pairwise_posterior <- function(traces_z){
   n_samples <- dim(traces_z)[1]
@@ -47,10 +31,12 @@ least_squares_clustering <- function(traces_z, pairwise){
 
 ###################################
 par(mfrow=c(3,3))
-burnin <- 100
+burnin <- 8000
 # Load test set
 dataset <- 'iris'
+dataset <- 'overlapped'
 dataset <- 'clear'
+
 P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
 y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y
 z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t')$z
@@ -68,7 +54,11 @@ for (i in 1:length(experiments)){
 
   # Negative loglikelihood
   negloglike <- -loglike(y_test, P_test, traces_coefficients, traces_intercept, traces_noise_inv)
-  cat("\n", experiments[i], "negloglike:", negloglike)
+  cat("\n\n", experiments[i], "negloglike:", negloglike)
+  
+  # Mean squared error
+  meanse <- mse(y_test, P_test, traces_coefficients, traces_intercept, traces_noise_inv)
+  cat("\n", experiments[i], "mse:", meanse)
   
   # Adjusted Rand Index
   traces_z <- read.csv(file.path(traces.path, 'traces.z.trc'), sep='')[-c(1:burnin),]

@@ -18,12 +18,9 @@ if(FALSE){
   plot(mcmc(traces.coefficients[complete.cases(traces.coefficients),1:10]))
 }
 
-PLOTS <- FALSE
-PLOTS.FREQUENCY <- 10 # iterations between two plots
-data(iris)
-data(geyser)
 
-gibbs <- function(A, B, P, y, z_init, iters=100){
+
+gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
   # Arguments:
   #   A: matrix with user features (one column per user)
   #   B: matrix with user coefficients (one column per user and only one row)
@@ -53,6 +50,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
   P <- as.matrix(P)
   y <- as.matrix(y)
   
+  B_true <- B
   # traces
   traces.z <- matrix(NA, iters, N)
   traces.coefficients <- matrix(NA, iters, N)
@@ -161,7 +159,6 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
         for (k in 1:length(unique(z))){
           mask <- (z==k)
           S_br[,,k] <- sample_S_ar(B[,mask, drop=FALSE], mu_br[,k, drop=FALSE], beta_b0, W_b0)
-          #S_br[,,k] <- sample_S_ar(B[,mask, drop=FALSE], mu_br[,k, drop=FALSE], beta_b0, as.matrix(1))
           mu_br[,k] <- sample_mu_ar(B[,mask, drop=FALSE], S_br[,,k], mu_b0, R_b0)
           #if(abs(mu_br[,k]) < 0.0001){stop("bad mu_br")}
         }
@@ -187,9 +184,10 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
                         return(B)
                       }
             )
-
+        #B <- B_true # debug
         intercept <- sample_intercept(P, y, z, B, mu_intercept, s_intercept, s_y=noise_inv)
         noise_inv <- sample_noise_inv(P, y, B, variance_y)
+        #noise_inv <- 1
         #if(1/noise_inv>100) stop("bad noise_inv")
         cat("\nintercept:", intercept, "\tnoise:", 1/noise_inv, "W_b0:", W_b0)
   
@@ -214,6 +212,16 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
     # Sample common parameters
     #############################################################
     # Sample assignments and concentration parameter
+    
+    # a little hack. the fixed model is a DP with alpha=0
+    # the probability of a new cluster is 0
+    if(DP){
+      alpha <- sample_alpha(K = K, U = N)
+    }
+    else{
+      alpha <- 0
+    }
+    
     if(TRUE){
       for (n in 1:N){
         if(BEHAVIORS && FEATURES){
@@ -248,11 +256,10 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
           stop("Some cluster is not being used")
         }
         #z <- rep(1, length(z)) # debug
-
       }
       
       K <- length(unique(z))
-      alpha <- sample_alpha(K = K, U = N)
+
       
       traces.z[i,] <- z
       traces.alpha[i,] <- alpha
@@ -275,17 +282,26 @@ gibbs <- function(A, B, P, y, z_init, iters=100){
 
 
 if(FALSE){
+  set.seed(1)
+  
+  PLOTS <- FALSE
+  PLOTS.FREQUENCY <- 10 # iterations between two plots
+  data(iris)
+  data(geyser)
   
   # Load data
   ######################################
   # Choose one of the datasers
   dataset = 'confused_features'
-  dataset = 'overlapped'
   dataset = 'iris'
   dataset = 'clear'
-
+  dataset = 'agreement'
+  
+  
   # Number of threads used for training
-  nthreads.train <- 20
+  nthreads.train <- 10
+  
+  nsamples <- 1000 
   
   # Load dataset
   data.dir <- paste0('./data/', dataset, '/')
@@ -323,7 +339,10 @@ if(FALSE){
   
   # run !
   #############
-  res <- gibbs(A, B, P, y, z_init=z_init, iters=1000)
+  #res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=F)
+  
+  z_init <- kmeans(t(A), 5)$cluster
+  res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
   
   # Plot traces
   #######################

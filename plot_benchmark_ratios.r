@@ -8,6 +8,9 @@ options(warn=1)
 
 dataset <- 'iris'
 dataset <- 'clear'
+dataset <- 'overlapped'
+
+
 path <- file.path("out", dataset)
 
 # one view sees 4, the other sees 5 clusters

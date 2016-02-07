@@ -7,8 +7,9 @@ library(coda)
 library(ggplot2)
 library(reshape2)
 
-traces.dir <- "./out/iris/DP_threads_10-1"
-burn <- 2000 # burned samples
+traces.dir <- "./out/clear/DP_threads_140-1"
+traces.dir <- "./out/overlapped/DP_threads_60-1"
+burn <- 8000 # burned samples
 
 # Read trace files
 files <- list.files(path = traces.dir, pattern = ".trc", recursive=T, full.names = T)
@@ -120,3 +121,7 @@ dev.off()
 
 # plot traces of number of clusters
 plot(1:length(nclusters), nclusters, pch=3, type='l', xlab='Iteration', ylab="Number of clusters")
+
+# Plot noise. Good way to check whether it converged or something strange happenned
+par(mfrow=c(1,1))
+plot(df.traces$noise_inv, type="l")
