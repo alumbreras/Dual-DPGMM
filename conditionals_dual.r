@@ -68,8 +68,9 @@ sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){
     
 
     # if old cluster is empty, shift right tables to the left
+    # do it only if DP is used (m>0)
     n <- tabulate(z)
-    if(any(n==0)){
+    if(any(n==0) && (m>0)){
       #cat(paste("\nShift labels:", tabulate(z))) 
       empty <- which(n==0)
       right <- (empty+1):(K+1)
@@ -154,7 +155,6 @@ sample_z_dual <- function(u, A, B, alpha, z,
   # Choose table
   chosen <- base::sample(1:(K+m), 1, prob=probs)
   
-  
   # Re-label tables
   ##########################################
   # if auxiliary table is chosen, assign label K+i-th to this new table
@@ -171,8 +171,9 @@ sample_z_dual <- function(u, A, B, alpha, z,
   
   
   # if old cluster is empty, shift right tables to the left
+  # do it only if DP is used (m>0)
   n <- tabulate(z)
-  if(any(n==0)){
+  if(any(n==0) && (m>0)){
     #cat(paste("\nShift labels:", tabulate(z))) 
     empty <- which(n==0)
     right <- (empty+1):(K+1)
@@ -183,9 +184,11 @@ sample_z_dual <- function(u, A, B, alpha, z,
     z[z>empty] <- z[z>empty] - 1
     #cat(paste("\nNew labels: ", tabulate(z)))
   }
+  
   if(max(z) != length(unique(z))){
     stop("Some cluster is not being used")
   }
+  
   return(list(z=z,
               mu_ar=mu_ar,
               S_ar=S_ar,

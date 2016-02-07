@@ -10,8 +10,6 @@
 ##########################
 *.trc
 *traces*
-*.eps
-*.png
 *.pck
 *.pk
 *.log
@@ -29,15 +27,9 @@
 ##########################
 *.metadata/
 src_cpp/
-datasets/
 *.data
-*.hf5
-*.h5
-*.hd
 *.RData
 *.Rhistory
-*.mp4
-*.exe
 *.lprof
 *.tar.gz
 
