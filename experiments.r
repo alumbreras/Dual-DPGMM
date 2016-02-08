@@ -47,11 +47,11 @@ experiment <- function(nthreads.train, dataset, model, nsamples, K=5){
     # run !
     #############
     if(model=="DP"){
-      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples)
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=TRUE, views='both')
     }
     if(model=="fixed"){
       z_init <- kmeans(t(A), K)$cluster
-      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE, views='both')
     }
     if(model=="single"){
       # Not implemented yed/
@@ -60,7 +60,7 @@ experiment <- function(nthreads.train, dataset, model, nsamples, K=5){
       # but likelihood co,puted only with coefficients
       # sample_z and pass behavior view params
       z_init <- kmeans(t(A), K)$cluster
-      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
+      res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=TRUE, views='behaviors')
     }
 
     # Save traces to files
@@ -95,11 +95,14 @@ dataset = 'iris'
 dataset = 'clear'
 dataset <- 'agreement'
 
+model <- 'fixed'
 model <- 'DP'
+model <- 'single'
 nsamples <- 20000
 i.seq <- rep(seq(10,100, by=10), 3)
 if(TRUE){
-  cl<-makeCluster(7, outfile="")
+  ncores <- detectCores() - 3
+  cl<-makeCluster(ncores, outfile="", port=11439)
   registerDoParallel(cl)
   pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
   foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)

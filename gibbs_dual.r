@@ -18,9 +18,9 @@ if(FALSE){
   plot(mcmc(traces.coefficients[complete.cases(traces.coefficients),1:10]))
 }
 
+PLOTS <- FALSE
 
-
-gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
+gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE, views=c('both', 'features', 'behaviors')){
   # Arguments:
   #   A: matrix with user features (one column per user)
   #   B: matrix with user coefficients (one column per user and only one row)
@@ -33,13 +33,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
   # (alpha controls the probability of opening a new cluster)
   
   ######################################################
-  # Choose which view to activate
-  # If FEATURES only, the model is a DP-GMM
-  # If BEHAVIORS only, the model is a DP - bayesian linear regression 
-  # (coefficients assumed to come from clusters)
-  # If FEATURES and BEHAVIORS, dual model presented in Lumbreras et al 2016.
-  FEATURES <- TRUE
-  BEHAVIORS <- TRUE
+  views <- match.arg(views)
 
   threads.idx <- order(y) # for plotting
   
@@ -124,9 +118,8 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
     
     ##############################################################
     # Sample variables in features view
-    ##############################################################
-    
-    if(FEATURES){
+    ############################################################## 
+    if((views=='features') || (views=='both')){
       # Sample component parameters
       for (k in 1:length(unique(z))){
         mask <- (z==k)
@@ -154,7 +147,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
     ##############################################################
     # Sample variables in behaviors view
     ##############################################################
-    if(BEHAVIORS){
+    if((views=='behaviors') || (views=='both')){
         # Sample component parameters
         for (k in 1:length(unique(z))){
           mask <- (z==k)
@@ -176,8 +169,6 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
         # once B is sampled, the rest of the sampler sees B as regular features 
         # Sample latent coefficients
         # Sample intercept from a gaussian prior with mean 0 and flat variance
-        #noise_inv <- 100
-        #B <- sample_b(P, y, z, intercept, mu_br[,1:K, drop=FALSE], S_br[,,1:K, drop=FALSE], s_y=noise_inv)
         B <- tryCatch(sample_b(P, y, z, intercept, mu_br[,1:K, drop=FALSE], S_br[,,1:K, drop=FALSE], s_y=noise_inv),
                       error=function(e){
                         cat(paste("sample_b(): ", e))
@@ -224,7 +215,7 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
     
     if(TRUE){
       for (n in 1:N){
-        if(BEHAVIORS && FEATURES){
+        if(views=='both'){
           res <- sample_z_dual(n, A, B, alpha, z, 
                           mu_ar, S_ar, mu_a0, R_a0,  beta_a0, W_a0,
                           mu_br, S_br, mu_b0, R_b0, beta_b0, W_b0)
@@ -234,33 +225,29 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE){
           mu_br <- res$mu_br
           S_br <- res$S_br
         }
-        if(FEATURES && !BEHAVIORS){
+        if(views=='features'){
           res <- sample_z(n, A, alpha, z, 
                           mu_ar, S_ar, mu_a0, R_a0,  beta_a0, W_a0)
           z <- res$z
           mu_ar <- res$mu_ar
           S_ar <- res$S_ar
         }
-        if(BEHAVIORS && !FEATURES){
+        if(views=='behaviors'){
           res <- sample_z(n, B, alpha, z, 
                           mu_br, S_br, mu_b0, R_b0,  beta_b0, W_b0)
           z <- res$z
           mu_br <- res$mu_ar
           S_br <- res$S_ar
         }
+        
         # Assert
         if(max(z) != length(unique(z))){
           cat('\nuser: ', n)
           cat(tabulate(z))
-          cat(z[u])
           stop("Some cluster is not being used")
         }
-        #z <- rep(1, length(z)) # debug
       }
-      
-      K <- length(unique(z))
-
-      
+            
       traces.z[i,] <- z
       traces.alpha[i,] <- alpha
       
@@ -299,7 +286,7 @@ if(FALSE){
   
   
   # Number of threads used for training
-  nthreads.train <- 10
+  nthreads.train <- 50
   
   nsamples <- 1000 
   
@@ -342,7 +329,7 @@ if(FALSE){
   #res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=F)
   
   z_init <- kmeans(t(A), 5)$cluster
-  res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=FALSE)
+  res <- gibbs(A, B, P, y, z_init=z_init, iters=nsamples, DP=TRUE, views='behaviors')
   
   # Plot traces
   #######################

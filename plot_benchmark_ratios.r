@@ -9,7 +9,8 @@ options(warn=1)
 dataset <- 'iris'
 dataset <- 'clear'
 dataset <- 'overlapped'
-
+dataset <- 'confused_features'
+dataset <- "agreement"
 
 path <- file.path("out", dataset)
 

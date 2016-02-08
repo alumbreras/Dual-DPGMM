@@ -31,11 +31,13 @@ least_squares_clustering <- function(traces_z, pairwise){
 
 ###################################
 par(mfrow=c(3,3))
-burnin <- 8000
+burnin <- 10000
 # Load test set
 dataset <- 'iris'
 dataset <- 'overlapped'
 dataset <- 'clear'
+dataset <- 'confused_features' #mediamining
+dataset <- "agreement"
 
 P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
 y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y

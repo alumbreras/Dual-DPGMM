@@ -79,13 +79,11 @@ sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){
       z[z>empty] <- z[z>empty] - 1
       #cat(paste("\nNew labels: ", tabulate(z)))
     }
-    if(max(z) != length(unique(z))){
-      cat('\nuser: ', u)
-      cat("\nChosen: ", chosen)
-      cat(tabulate(z))
-      cat(z[u])
+    
+    if((max(z) != length(unique(z))) && (m>0)){
       stop("Some cluster is not being used")
     }
+      
     return(list(z=z,
                 mu_ar=mu_ar,
                 S_ar=S_ar))
@@ -185,7 +183,7 @@ sample_z_dual <- function(u, A, B, alpha, z,
     #cat(paste("\nNew labels: ", tabulate(z)))
   }
   
-  if(max(z) != length(unique(z))){
+  if((max(z) != length(unique(z))) && (m>0)){
     stop("Some cluster is not being used")
   }
   

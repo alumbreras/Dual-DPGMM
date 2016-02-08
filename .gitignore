@@ -32,6 +32,6 @@ src_cpp/
 *.Rhistory
 *.lprof
 *.tar.gz
-
+Rplots.pdf
 
 
