@@ -29,31 +29,20 @@ least_squares_clustering <- function(traces_z, pairwise){
   return(best_sample)
 }
 
-###################################
-par(mfrow=c(3,3))
-burnin <- 10000
-# Load test set
-dataset <- 'iris'
-dataset <- 'overlapped'
-dataset <- 'clear'
-dataset <- 'confused_features' #mediamining
-dataset <- "agreement"
 
-P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
-y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y
-z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t')$z
-
-# Get prediction samples for P_test and compute negative loglikelihood by comparing the predictions
-# with the y_test
-experiments <- list.dirs(path = file.path("out", dataset), recursive=F, full.names = T)
-for (i in 1:length(experiments)){
+evaluate <- function(experiment.path, burnin){
+  
+  P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
+  y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y
+  z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t')$z
+  
   traces.path <- file.path(experiments[i], 'traces')
   traces_coefficients <- read.csv(file.path(traces.path, 'traces.coefficients.trc'), sep='')[-c(1:burnin),]
   traces_intercept <- read.csv(file.path(traces.path, 'traces.intercept.trc'), sep='')[-c(1:burnin),]
   traces_noise_inv <- read.csv(file.path(traces.path, 'traces.noise_inv.trc'), sep='')[-c(1:burnin),]
   traces_coefficients <- as.matrix(traces_coefficients)
   traces_noise_inv <- as.matrix(traces_noise_inv)
-
+  
   # Negative loglikelihood
   negloglike <- -loglike(y_test, P_test, traces_coefficients, traces_intercept, traces_noise_inv)
   cat("\n\n", experiments[i], "negloglike:", negloglike)
@@ -65,8 +54,8 @@ for (i in 1:length(experiments)){
   # Adjusted Rand Index
   traces_z <- read.csv(file.path(traces.path, 'traces.z.trc'), sep='')[-c(1:burnin),]
   traces_z <- as.matrix(traces_z)
-  pairwise <- pairwise_posterior(traces_z[1:100,])
-  ls_z <- least_squares_clustering(traces_z[1:100,], pairwise)
+  pairwise <- pairwise_posterior(traces_z[5000:5200,])
+  ls_z <- least_squares_clustering(traces_z[5000:5200,], pairwise)
   ari = adjustedRandIndex(z_true, ls_z)
   cat("\n", experiments[i], "ARI:", ari)
   
@@ -76,12 +65,39 @@ for (i in 1:length(experiments)){
   axis(1,seq(0,50, by=10),seq(0,50, by=10), pos=0.5)
   axis(2,seq(0,50, by=10),seq(0,50, by=10), pos=0.5)
   title(experiments[i])
-
+  
   # Save to file
   model <- strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][1]
   nthreads <- strsplit(strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][3], "-")[[1]][1]
   write.table(t(c(model, nthreads, negloglike, ari)), 
               file=file.path("out", dataset, "results.csv"), sep='\t', col.names=FALSE, row.names=FALSE, append=TRUE)
-  
-  
+
+}
+
+###################################
+library(doParallel)
+library(foreach)
+library(parallel)
+
+par(mfrow=c(3,3))
+burnin <- 10000
+
+# Load test set
+dataset <- 'iris'
+dataset <- 'overlapped'
+dataset <- 'clear'
+dataset <- 'confused_features' #mediamining
+dataset <- "agreement"
+
+experiments <- list.dirs(path = file.path("out", dataset), recursive=F, full.names = T)
+
+# Get prediction samples for P_test and compute negative loglikelihood by comparing the predictions
+# with the y_test
+if(TRUE){
+  ncores <- detectCores() - 2
+  cl<-makeCluster(ncores, outfile="", port=11439)
+  registerDoParallel(cl)
+  pck = c('mclust')
+  foreach(i=1:length(experiments), .packages = pck)%dopar%evaluate(experiments[i], burnin)
+  stopCluster(cl)
 }

@@ -9,7 +9,8 @@ library(reshape2)
 
 traces.dir <- "./out/clear/DP_threads_140-1"
 traces.dir <- "./out/overlapped/DP_threads_60-1"
-burn <- 8000 # burned samples
+traces.dir <- "./out/agreement/DP_threads_40_20000-1"
+burn <- 17000 # burned samples
 
 # Read trace files
 files <- list.files(path = traces.dir, pattern = ".trc", recursive=T, full.names = T)

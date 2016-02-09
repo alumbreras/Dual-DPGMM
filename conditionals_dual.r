@@ -2,6 +2,8 @@
 #
 library(MASS)
 library(mvtnorm)
+source('ars_alpha.r')
+source('ars_beta.r')
 
 DEBUG <- FALSE
 sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){

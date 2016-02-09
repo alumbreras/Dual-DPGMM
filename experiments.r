@@ -94,13 +94,32 @@ dataset = 'confused_features'
 dataset = 'iris'
 dataset = 'clear'
 dataset <- 'agreement'
+dataset <- 'disagreement'
 
-model <- 'fixed'
-model <- 'DP'
-model <- 'single'
+
 nsamples <- 20000
 i.seq <- rep(seq(10,100, by=10), 3)
 if(TRUE){
+  model <- 'single'
+  
+  ncores <- detectCores() - 3
+  cl<-makeCluster(ncores, outfile="", port=11439)
+  registerDoParallel(cl)
+  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
+  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
+  stopCluster(cl)
+  
+  model <- 'DP'
+  
+  ncores <- detectCores() - 3
+  cl<-makeCluster(ncores, outfile="", port=11439)
+  registerDoParallel(cl)
+  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
+  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
+  stopCluster(cl)
+
+  model <- 'fixed'
+  
   ncores <- detectCores() - 3
   cl<-makeCluster(ncores, outfile="", port=11439)
   registerDoParallel(cl)
@@ -108,3 +127,6 @@ if(TRUE){
   foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
   stopCluster(cl)
 }
+
+
+

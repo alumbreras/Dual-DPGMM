@@ -92,7 +92,7 @@ disagreement <- function(U=100, R=10){
   mu_br <- seq(0,100, length.out=R)
   b <- rep(0, U)
   for(r in 1:R){
-    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=8)
+    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=5)
   }
   
   list(A=A,
@@ -274,7 +274,7 @@ plot.real.data <- function(A, b, z){
 ##########################################################
 if (TRUE){
   generators <- c(clear, disagreement, agreement)
-  gen <- generators[[3]] # chose one of the three scenarios
+  gen <- generators[[2]] # chose one of the three scenarios
   
   # Generate and plot the data
   i = 50 # number of users

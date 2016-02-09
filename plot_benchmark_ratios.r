@@ -25,7 +25,7 @@ levels(df$model)[levels(df$model)=="DP"] <- "dual-DP"
 levels(df$model)[levels(df$model)=="fixed"] <- "dual-fixed"
 levels(df$model)[levels(df$model)=="norole"] <- "single"
 
-df <- df[df$T %in% c(20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
+df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
 
 # Summarize means and variances for every group (U,T)
 df <- ddply(df,.(model, T), 
@@ -74,7 +74,7 @@ levels(df$model)[levels(df$model)=="fixed"] <- "dual-fixed"
 levels(df$model)[levels(df$model)=="norole"] <- "single"
 
 df <- df[df$mode != "single",]
-df <- df[df$T %in% c(20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
+df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
 
 # Summarize means and variances for every group (U,T)
 df <- ddply(df,.(model, T), 
