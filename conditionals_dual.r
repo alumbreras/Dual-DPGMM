@@ -73,15 +73,13 @@ sample_z <- function(u, A, alpha, z, mu_ar, S_ar, mu_a0, R_a0, beta_a0, W_a0){
     # do it only if DP is used (m>0)
     n <- tabulate(z)
     if(any(n==0) && (m>0)){
-      #cat(paste("\nShift labels:", tabulate(z))) 
       empty <- which(n==0)
       right <- (empty+1):(K+1)
       mu_ar[,(empty:K)] <- mu_ar[,(empty+1):(K+1)]
       S_ar[,,(empty:K)] <- S_ar[,,(empty+1):(K+1)]
       z[z>empty] <- z[z>empty] - 1
-      #cat(paste("\nNew labels: ", tabulate(z)))
     }
-    
+
     if((max(z) != length(unique(z))) && (m>0)){
       stop("Some cluster is not being used")
     }
@@ -174,7 +172,6 @@ sample_z_dual <- function(u, A, B, alpha, z,
   # do it only if DP is used (m>0)
   n <- tabulate(z)
   if(any(n==0) && (m>0)){
-    #cat(paste("\nShift labels:", tabulate(z))) 
     empty <- which(n==0)
     right <- (empty+1):(K+1)
     mu_ar[,(empty:K)] <- mu_ar[,(empty+1):(K+1)]
@@ -182,9 +179,8 @@ sample_z_dual <- function(u, A, B, alpha, z,
     mu_br[,(empty:K)] <- mu_br[,(empty+1):(K+1)]
     S_br[,,(empty:K)] <- S_br[,,(empty+1):(K+1)]
     z[z>empty] <- z[z>empty] - 1
-    #cat(paste("\nNew labels: ", tabulate(z)))
   }
-  
+
   if((max(z) != length(unique(z))) && (m>0)){
     stop("Some cluster is not being used")
   }
@@ -202,13 +198,7 @@ sample_b <- function(P, y, z, intercept, mu_ar, S_ar, s_y=10){
   P <- as.matrix(P)
   Lambda_post <- diag(S_ar[,,z]) + P%*%diag(rep(s_y, nthreads))%*%t(P)  
   
-  # be aware of computationally singular matrices
-  #Sigma_post <- tryCatch(solve(Lambda_post), 
-  #                       error=function(e){
-  #                         print(e);
-  #                         print(s_y)
-  #                         cat("\nCalling ginv")
-  #                         return(ginv(Lambda_post))} )
+  # Note: be aware of computationally singular matrices (use ginv if necessary)
   Sigma_post <- solve(Lambda_post) 
   mu_post <- Sigma_post%*%(as.matrix(S_ar[z]*mu_ar[z]) + s_y*(P%*%as.matrix(y-intercept)))
   return(t(mvrnorm(mu=mu_post, Sigma=Sigma_post)))

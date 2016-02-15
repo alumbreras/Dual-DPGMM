@@ -31,12 +31,14 @@ least_squares_clustering <- function(traces_z, pairwise){
 
 
 evaluate <- function(experiment.path, burnin){
+  # Get prediction samples for P_test and compute negative loglikelihood by comparing the predictions
+  # with the y_tes
   
   P_test <- read.csv(file.path("./data/", dataset, "/test_participations_50.csv"), sep='\t')
   y_test <- read.csv(file.path("./data/", dataset, "/test_lengths_50.csv"), sep='\t')$y
   z_true <- read.csv(file.path("./data/", dataset, "/data_users_50.csv"), sep='\t')$z
   
-  traces.path <- file.path(experiments[i], 'traces')
+  traces.path <- file.path(experiment.path, 'traces')
   traces_coefficients <- read.csv(file.path(traces.path, 'traces.coefficients.trc'), sep='')[-c(1:burnin),]
   traces_intercept <- read.csv(file.path(traces.path, 'traces.intercept.trc'), sep='')[-c(1:burnin),]
   traces_noise_inv <- read.csv(file.path(traces.path, 'traces.noise_inv.trc'), sep='')[-c(1:burnin),]
@@ -67,9 +69,9 @@ evaluate <- function(experiment.path, burnin){
   title(experiments[i])
   
   # Save to file
-  model <- strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][1]
-  nthreads <- strsplit(strsplit(strsplit(experiments[i], "/")[[1]][3], '_')[[1]][3], "-")[[1]][1]
-  write.table(t(c(model, nthreads, negloglike, ari)), 
+  model <- strsplit(strsplit(experiment.path, "/")[[1]][3], '_')[[1]][1]
+  nthreads <- strsplit(strsplit(strsplit(experiment.path, "/")[[1]][3], '_')[[1]][3], "-")[[1]][1]
+  write.table(t(c(experiment.path, model, nthreads, negloglike, ari)), 
               file=file.path("out", dataset, "results.csv"), sep='\t', col.names=FALSE, row.names=FALSE, append=TRUE)
 
 }
@@ -87,17 +89,21 @@ dataset <- 'iris'
 dataset <- 'overlapped'
 dataset <- 'clear'
 dataset <- 'confused_features' #mediamining
+dataset <- "disagreement"
 dataset <- "agreement"
 
+# Experiments that have not been yet evaluated 
 experiments <- list.dirs(path = file.path("out", dataset), recursive=F, full.names = T)
+experiments.evaluated <- read.csv(file.path('out', dataset, 'results.csv'), sep='\t', head=FALSE)[,1]
+experiments <- experiments[! experiments %in% experiments.evaluated]
 
-# Get prediction samples for P_test and compute negative loglikelihood by comparing the predictions
-# with the y_test
-if(TRUE){
+if(length(experiments)>0){
   ncores <- detectCores() - 2
   cl<-makeCluster(ncores, outfile="", port=11439)
   registerDoParallel(cl)
   pck = c('mclust')
   foreach(i=1:length(experiments), .packages = pck)%dopar%evaluate(experiments[i], burnin)
   stopCluster(cl)
+}else{
+  cat("\nThere aren't new experiments to evaluate")
 }

@@ -18,7 +18,8 @@ if(FALSE){
   plot(mcmc(traces.coefficients[complete.cases(traces.coefficients),1:10]))
 }
 
-PLOTS <- FALSE
+PLOTS <- TRUE
+PLOTS.FREQUENCY <- 10 # iterations between two plots
 
 gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE, views=c('both', 'features', 'behaviors')){
   # Arguments:
@@ -175,13 +176,9 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE, views=c('both', 'featu
                         return(B)
                       }
             )
-        #B <- B_true # debug
         intercept <- sample_intercept(P, y, z, B, mu_intercept, s_intercept, s_y=noise_inv)
         noise_inv <- sample_noise_inv(P, y, B, variance_y)
-        #noise_inv <- 1
-        #if(1/noise_inv>100) stop("bad noise_inv")
-        cat("\nintercept:", intercept, "\tnoise:", 1/noise_inv, "W_b0:", W_b0)
-  
+        # cat("\nintercept:", intercept, "\tnoise:", 1/noise_inv, "W_b0:", W_b0)
         
         traces.b[i,] <- c(length(unique(z)), mean(mu_b0), det(R_b0), det(W_b0), beta_b0)
         traces.intercept[i,] <- c(intercept, mu_intercept, s_intercept)
@@ -238,13 +235,6 @@ gibbs <- function(A, B, P, y, z_init, iters=100, DP=TRUE, views=c('both', 'featu
           z <- res$z
           mu_br <- res$mu_ar
           S_br <- res$S_ar
-        }
-        
-        # Assert
-        if(max(z) != length(unique(z))){
-          cat('\nuser: ', n)
-          cat(tabulate(z))
-          stop("Some cluster is not being used")
         }
       }
             
