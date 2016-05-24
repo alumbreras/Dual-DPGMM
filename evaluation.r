@@ -56,8 +56,8 @@ evaluate <- function(experiment.path, burnin){
   # Adjusted Rand Index
   traces_z <- read.csv(file.path(traces.path, 'traces.z.trc'), sep='')[-c(1:burnin),]
   traces_z <- as.matrix(traces_z)
-  pairwise <- pairwise_posterior(traces_z)#[5000:5200,])
-  ls_z <- least_squares_clustering(traces_z, pairwise)#[5000:5200,], pairwise)
+  pairwise <- pairwise_posterior(traces_z[5000:5200,])
+  ls_z <- least_squares_clustering(traces_z[5000:5200,], pairwise)
   ari = adjustedRandIndex(z_true, ls_z)
   cat("\n", experiments[i], "ARI:", ari)
   
@@ -73,7 +73,7 @@ evaluate <- function(experiment.path, burnin){
   nthreads <- strsplit(strsplit(strsplit(experiment.path, "/")[[1]][3], '_')[[1]][3], "-")[[1]][1]
   write.table(t(c(experiment.path, model, nthreads, negloglike, ari)), 
               file=file.path("out", dataset, "results.csv"), sep='\t', col.names=FALSE, row.names=FALSE, append=TRUE)
-
+  
 }
 
 ###################################
@@ -85,20 +85,16 @@ par(mfrow=c(3,3))
 burnin <- 10000
 
 # Load test set
-
-dataset <- 'clear'
-dataset <- "disagreement"
-
-dataset <- "agreement"
 dataset <- 'iris'
+dataset <- 'overlapped'
+dataset <- 'clear'
+dataset <- 'confused_features' #mediamining
+dataset <- "disagreement"
+dataset <- "agreement"
 
 # Experiments that have not been yet evaluated 
 experiments <- list.dirs(path = file.path("out", dataset), recursive=F, full.names = T)
-results.file <- file.path('out', dataset, 'results.csv')
-experiments.evaluated <- vector()
-if(file.exists(results.file)){
 experiments.evaluated <- read.csv(file.path('out', dataset, 'results.csv'), sep='\t', head=FALSE)[,1]
-}
 experiments <- experiments[! experiments %in% experiments.evaluated]
 
 if(length(experiments)>0){

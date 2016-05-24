@@ -11,12 +11,19 @@ options(warn=1)
 #dataset <- 'confused_features'
 
 dataset <- 'clear'
+<<<<<<< HEAD
 
 dataset <- "disagreement"
 dataset <- "agreement"
 dataset <- 'iris'
 
 
+=======
+dataset <- 'overlapped'
+dataset <- 'confused_features'
+dataset <- "disagreement"
+#dataset <- "agreement"
+>>>>>>> cb9c7e3e353728a21e70ae04da064f57e5d0622a
 
 path <- file.path("out", dataset)
 

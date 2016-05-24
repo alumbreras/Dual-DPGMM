@@ -127,7 +127,7 @@ real <- function(){
   mu_br <- seq(0,100, length.out=3)
   b <- rep(0, U)
   for(r in 1:3){
-    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=8)
+    b[z==r]<- rnorm(sum(z==r), mean=mu_br[r], sd=5)
   }
   
   list(A=A,
@@ -303,12 +303,12 @@ if (FALSE){
   
   # user participations and thread lengths
   #parts <- participations(b=data$b, T=1000, s_y=1000)
-  parts <- participations(b=data$b, T=1000)
+  parts <- participations(b=data$b, T=10000)
   save.participations(parts$P,parts$y, suffix="train")
   
   # test set
   #parts <- participations(b=data$b, T=100, s_y=1000)
-  parts <- participations(b=data$b, T=100)
+  parts <- participations(b=data$b, T=1000)
   save.participations(parts$P,parts$y, suffix="test")
   
   # sanity checks

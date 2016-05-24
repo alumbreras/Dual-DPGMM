@@ -98,6 +98,7 @@ dataset <- 'agreement'
 dataset = 'iris'
 
 nsamples <- 20000
+<<<<<<< HEAD
 #i.seq <- rep(seq(10,100, by=10), 3)
 i.seq <- rep(c(40), 5)
 ncores <- detectCores() - 2
@@ -108,6 +109,17 @@ pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda', 'ars')
 foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'single', nsamples, K=5)
 #foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'DP', nsamples, K=5)
 #foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'fixed', nsamples, K=5)  
+=======
+i.seq <- rep(seq(20,100, by=10), 1)
+ncores <- detectCores() - 2
+cl<-makeCluster(ncores, outfile="", port=11439)
+registerDoParallel(cl)
+pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
+
+foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'single', nsamples, K=5)
+foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'DP', nsamples, K=5)
+foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'fixed', nsamples, K=5)  
+>>>>>>> cb9c7e3e353728a21e70ae04da064f57e5d0622a
 
 stopCluster(cl)
 
