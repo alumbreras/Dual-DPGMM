@@ -1,0 +1,128 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: dualview_clustering_camera.aux
+The style file: spbasic.bst
+Database file #1: library.bib
+Repeated entry---line 3770 of file library.bib
+ : @article{Gorur2010
+ :                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 5523 of file library.bib
+ : @inproceedings{Cheng2014
+ :                         ,
+I'm skipping whatever remains of this entry
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You can't pop an empty literal stack for entry Abbasnejad2013a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Abbasnejad2013a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry SteffenandTobiasScheffer
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry SteffenandTobiasScheffer
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Bonilla2010
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Bonilla2010
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Brown2000
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Brown2000
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Cheng2014
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Cheng2014
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Cheung2004
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Cheung2004
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Dahl2006
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Dahl2006
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Eisen1998
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Eisen1998
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Gilks1992
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Gilks1992
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Gorur2010
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Gorur2010
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Greene2009a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Greene2009a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Kumar2011
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Kumar2011
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Mitchell1998
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Mitchell1998
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Neal2000
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Neal2000
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Niu2012
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Niu2012
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Pavlidis2002
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Pavlidis2002
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Pellegrini1999a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Pellegrini1999a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Rasmussen2000a
+while executing---line 1652 of file spbasic.bst
+You can't pop an empty literal stack for entry Rasmussen2000a
+while executing---line 1652 of file spbasic.bst
+You've used 18 entries,
+            3239 wiz_defined-function locations,
+            819 strings with 9938 characters,
+and the built_in function-call counts, 30840 in all, are:
+= -- 3605
+> -- 580
+< -- 16
++ -- 300
+- -- 181
+* -- 2186
+:= -- 3334
+add.period$ -- 18
+call.type$ -- 18
+change.case$ -- 165
+chr.to.int$ -- 18
+cite$ -- 18
+duplicate$ -- 3221
+empty$ -- 2277
+format.name$ -- 243
+if$ -- 6481
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 188
+newline$ -- 64
+num.names$ -- 80
+pop$ -- 795
+preamble$ -- 1
+purify$ -- 127
+quote$ -- 0
+skip$ -- 1330
+stack$ -- 0
+substring$ -- 3140
+swap$ -- 1842
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 162
+warning$ -- 0
+while$ -- 193
+width$ -- 0
+write$ -- 247
+(There were 38 error messages)

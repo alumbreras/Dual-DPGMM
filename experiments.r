@@ -91,42 +91,24 @@ library(parallel)
 
 # Choose one of the datasers
 dataset = 'confused_features'
-dataset = 'iris'
 dataset = 'clear'
-dataset <- 'agreement'
-dataset <- 'disagreement'
 
+dataset <- 'disagreement'
+dataset <- 'agreement'
+dataset = 'iris'
 
 nsamples <- 20000
-i.seq <- rep(seq(10,100, by=10), 3)
-if(TRUE){
-  model <- 'single'
-  
-  ncores <- detectCores() - 3
-  cl<-makeCluster(ncores, outfile="", port=11439)
-  registerDoParallel(cl)
-  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
-  stopCluster(cl)
-  
-  model <- 'DP'
-  
-  ncores <- detectCores() - 3
-  cl<-makeCluster(ncores, outfile="", port=11439)
-  registerDoParallel(cl)
-  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
-  stopCluster(cl)
+#i.seq <- rep(seq(10,100, by=10), 3)
+i.seq <- rep(c(40), 5)
+ncores <- detectCores() - 2
+cl<-makeCluster(ncores, outfile="", port=11439)
+registerDoParallel(cl)
+pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda', 'ars')
 
-  model <- 'fixed'
-  
-  ncores <- detectCores() - 3
-  cl<-makeCluster(ncores, outfile="", port=11439)
-  registerDoParallel(cl)
-  pck = c('abind', 'MASS', 'mvtnorm', 'mixtools', 'coda')
-  foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, model, nsamples, K=5)
-  stopCluster(cl)
-}
+foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'single', nsamples, K=5)
+#foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'DP', nsamples, K=5)
+#foreach(i=i.seq, .packages = pck)%dopar%experiment(i, dataset, 'fixed', nsamples, K=5)  
 
+stopCluster(cl)
 
 

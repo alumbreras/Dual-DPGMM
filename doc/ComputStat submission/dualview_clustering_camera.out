@@ -1,0 +1,32 @@
+\BOOKMARK [1][]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][]{section.2}{Model description}{}% 2
+\BOOKMARK [2][]{subsection.2.1}{Mixture models}{section.2}% 3
+\BOOKMARK [2][]{subsection.2.2}{Dual-view mixture model}{section.2}% 4
+\BOOKMARK [2][]{subsection.2.3}{Infinite number of clusters}{section.2}% 5
+\BOOKMARK [1][]{section.3}{Application to role detection in online forums}{}% 6
+\BOOKMARK [2][]{subsection.3.1}{Features view}{section.3}% 7
+\BOOKMARK [2][]{subsection.3.2}{Behaviors view}{section.3}% 8
+\BOOKMARK [2][]{subsection.3.3}{Shared parameters}{section.3}% 9
+\BOOKMARK [1][]{section.4}{Inference}{}% 10
+\BOOKMARK [2][]{subsection.4.1}{Predictive distribution}{section.4}% 11
+\BOOKMARK [1][]{section.5}{Experiments}{}% 12
+\BOOKMARK [2][]{subsection.5.1}{Compared models}{section.5}% 13
+\BOOKMARK [2][]{subsection.5.2}{Metrics}{section.5}% 14
+\BOOKMARK [2][]{subsection.5.3}{Agreement between views}{section.5}% 15
+\BOOKMARK [2][]{subsection.5.4}{Disagreement between views}{section.5}% 16
+\BOOKMARK [2][]{subsection.5.5}{Iris dataset}{section.5}% 17
+\BOOKMARK [2][]{subsection.5.6}{Computational cost}{section.5}% 18
+\BOOKMARK [2][]{subsection.5.7}{Summary of the experiments}{section.5}% 19
+\BOOKMARK [1][]{section.6}{Conclusions}{}% 20
+\BOOKMARK [1][]{appendix.A}{Chinese Restaurant Process}{}% 21
+\BOOKMARK [1][]{appendix.B}{Conditionals for the features view}{}% 22
+\BOOKMARK [2][]{subsection.B.1}{Component parameters}{appendix.B}% 23
+\BOOKMARK [2][]{subsection.B.2}{Shared hyper-parameters}{appendix.B}% 24
+\BOOKMARK [1][]{appendix.C}{Conditionals for the behaviors view}{}% 25
+\BOOKMARK [2][]{subsection.C.1}{Users parameters}{appendix.C}% 26
+\BOOKMARK [2][]{subsection.C.2}{Component parameters}{appendix.C}% 27
+\BOOKMARK [2][]{subsection.C.3}{Shared hyper-parameters}{appendix.C}% 28
+\BOOKMARK [2][]{subsection.C.4}{Regression noise}{appendix.C}% 29
+\BOOKMARK [1][]{appendix.D}{Sampling 0\(a\)}{}% 30
+\BOOKMARK [1][]{appendix.E}{Sampling 0\(f\)}{}% 31
+\BOOKMARK [1][]{appendix.F}{Sampling }{}% 32

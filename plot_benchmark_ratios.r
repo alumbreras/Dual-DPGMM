@@ -6,11 +6,17 @@ library(grid)
 library(gridExtra)
 options(warn=1)
 
-dataset <- 'iris'
+
+#dataset <- 'overlapped'
+#dataset <- 'confused_features'
+
 dataset <- 'clear'
-dataset <- 'overlapped'
-dataset <- 'confused_features'
+
+dataset <- "disagreement"
 dataset <- "agreement"
+dataset <- 'iris'
+
+
 
 path <- file.path("out", dataset)
 
@@ -19,13 +25,13 @@ files.name <- list.files(path=path, pattern=".csv", recursive=TRUE, full.names=T
 files.df <- lapply(files.name, read.delim, header=FALSE, sep='\t')
 df <- do.call(rbind, files.df)
 
-names(df) <- c("model", "T", "negloglike", "ARI")
+names(df) <- c("dir", "model", "T", "negloglike", "ARI")
 df <- df[c('model', 'T','negloglike')]
 levels(df$model)[levels(df$model)=="DP"] <- "dual-DP"
 levels(df$model)[levels(df$model)=="fixed"] <- "dual-fixed"
 levels(df$model)[levels(df$model)=="norole"] <- "single"
 
-df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
+df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100),]
 
 # Summarize means and variances for every group (U,T)
 df <- ddply(df,.(model, T), 
@@ -67,14 +73,14 @@ files.name <- list.files(path=path, pattern=".csv", recursive=T, full.names=T)
 files.df <- lapply(files.name, read.delim, header=FALSE, sep='\t')
 df <- do.call(rbind, files.df)
 
-names(df) <- c("model", "T", "negloglike", "ARI")
+names(df) <- c("dir", "model", "T", "negloglike", "ARI")
 df = df[c('model','T','ARI')]
 levels(df$model)[levels(df$model)=="DP"] <- "dual-DP"
 levels(df$model)[levels(df$model)=="fixed"] <- "dual-fixed"
 levels(df$model)[levels(df$model)=="norole"] <- "single"
 
 df <- df[df$mode != "single",]
-df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150, 200,300,400,500),]
+df <- df[df$T %in% c(10,20,30,40,50,60,70,80,90,100),]
 
 # Summarize means and variances for every group (U,T)
 df <- ddply(df,.(model, T), 
