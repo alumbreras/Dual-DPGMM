@@ -4,26 +4,12 @@ library(plyr)
 library(ggplot2)
 library(grid)
 library(gridExtra)
+library(cowplot)
 options(warn=1)
 
-
-#dataset <- 'overlapped'
-#dataset <- 'confused_features'
-
-dataset <- 'clear'
-<<<<<<< HEAD
-
-dataset <- "disagreement"
 dataset <- "agreement"
 dataset <- 'iris'
-
-
-=======
-dataset <- 'overlapped'
-dataset <- 'confused_features'
 dataset <- "disagreement"
-#dataset <- "agreement"
->>>>>>> cb9c7e3e353728a21e70ae04da064f57e5d0622a
 
 path <- file.path("out", dataset)
 
@@ -45,25 +31,36 @@ df <- ddply(df,.(model, T),
                 summarise, 
                 neglog.mean = mean(negloglike), neglog.sd = sd(negloglike))
 
+names(df)[2] <- "threads"
 
 # Plot accuracy 
-p1 <- ggplot(df, aes(x= df$T, y = neglog.mean, color=model)) + geom_line() + geom_point(size=2) +
+p1 <- ggplot(df, aes(x= threads, y = neglog.mean, color=model)) + 
+  geom_line(aes(linetype=model)) + 
+  geom_point(size=2) +
+  scale_color_manual(name= element_blank(),
+                     values=c('black', 'red', 'blue'),
+                     labels=c("dual-DP", "dual-fixed", "single")) +
+  scale_linetype_manual(name= element_blank(),
+                        values=c('solid', 'dashed', 'dotted'),
+                        labels=c("dual-DP", "dual-fixed", "single")) +
+  guides(color=guide_legend(override.aes=list(shape=c(NA,NA, NA), linetype=c('solid', 'dashed', 'dotted')))) +
+  
   xlab('Threads') +
   ylab('negative loglikelihood') +
   labs(color=NULL) +
   geom_errorbar(aes(ymin=neglog.mean-neglog.sd/2, ymax=neglog.mean+neglog.sd/2), width=1.2)+
-  scale_x_continuous(breaks=df$T)+
-  theme(text = element_text(size = 15),
+  scale_x_continuous(breaks=df$threads)+
+  theme(text = element_text(size = 13),
         panel.background = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
         legend.key = element_blank(),
         aspect.ratio = 6/9,
-        legend.position=c(0.9, 0.8))
+        legend.position=c(0.8, 0.8))
 
-print(p1)
-g1 <- grid.grab() 
+#print(p1)
+#g1 <- grid.grab() 
 
 
 # see also:
@@ -94,27 +91,46 @@ df <- ddply(df,.(model, T),
             summarise, 
             ARI.mean = mean(ARI), ARI.sd = sd(ARI))
 
+names(df)[2] <- "threads"
 
 # Plot accuracy 
-p2 <- ggplot(df, aes(x= df$T, y = ARI.mean, color=model)) + 
-     geom_line() + geom_point(size=2) +
+p2 <- ggplot(df, aes(x= threads, y = ARI.mean, color=model)) + 
+     geom_line(aes(linetype=model)) + geom_point(size=2) +
+    scale_color_manual(name= element_blank(),
+                       values=c('black', 'red'),
+                       labels=c("dual-DP", "dual-fixed")) +
+    scale_linetype_manual(name= element_blank(),
+                          values=c('solid', 'dashed'),
+                          labels=c("dual-DP", "dual-fixed")) +
+    guides(color=guide_legend(override.aes=list(shape=c(NA,NA), linetype=c('solid', 'dashed')))) +
      geom_errorbar(aes(ymin=ARI.mean-ARI.sd/2, ymax=ARI.mean+ARI.sd/2), width=1.2) +
      xlab('Threads') +
      ylab('Adjusted Rand Index') +
      labs(color=NULL) +
-     scale_x_continuous(breaks=df$T) +
+     scale_x_continuous(breaks=df$threads) +
      scale_y_continuous(breaks=seq(0,1,0.25), limits=c(0,1.1)) +
-     theme(text = element_text(size = 15),
+     theme(text = element_text(size = 13),
         panel.background = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
         legend.key = element_blank(),
         aspect.ratio = 6/9,
-        legend.position=c(0.9, 0.2))
+        legend.position=c(0.8, 0.2))
 
-print(p2)
-g2 <- grid.grab() 
+#print(p2)
+#g2 <- grid.grab() 
 
-grid.arrange(g1, g2, widths=c(0.5,0.5))  
+g <- plot_grid(p1, p2, ncol = 2, 
+               align = 'v') # aligning does not work here
 
+
+#g <- grid.arrange(g1, g2, widths=c(0.5,0.5))  
+ggsave("./doc/ComputStat submission/Fig6_results_disagreement_bw.eps", 
+       device="eps", 
+       plot=g,
+       #width = 20, height = 8, units = "cm")
+       width = 174, height = 70, units = "mm")
+
+# Springer instructions
+# For most journals the figures should be 39 mm, 84 mm, 129 mm, or 174 mm wide and not higher than 234 mm.

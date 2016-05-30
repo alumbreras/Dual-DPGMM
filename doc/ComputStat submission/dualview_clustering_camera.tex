@@ -525,7 +525,7 @@ We compared two dual-view models and one single-view model. We call them dual-fi
 Table \ref{tab:models} presents these three models as well as other related models that appear when blinding the models from one of the views. Note that we left out of the analysis those models that use clustering but are blinded of one view. The first two of these (IGMM and GMM), are regular clustering methods over feature vectors; we discarded them because they do not make inferences on latent behaviors. The last two (we call them latent-IGMM and latent-GMM) are Bayesian linear regressions where coefficients are assumed to come from a mixture of Gaussians; because these are in practice very similar to a simple Bayesian linear regression (they can be seen as Bayesian linear regressions with priors that tend to create groups of coefficients), we chose to benchmark only against the \texttt{single} model.
 
 Posterior distributions of parameters are obtained by Gibbs sampling. \alberto{We used the \texttt{coda} package in R \citep{coda} to examine the traces of the Gibbs sampler. For the convergence diagnostics, we used Geweke's test available in the same package.} After some initial runs and examinations of the chains to see how long it took to converge to the stationary distribution for the dual models, \alberto{we observed that convergence for all the models is usually reached before 5,000 samples. Since we run a large number of automatized experiments}, we set a conservative number of 30,000 samples for every run, from which the first 15,000 are discarded as burn-in samples. 
-For the first two experiments we initialized our samplers with all users in the same cluster. For the \textit{iris} experiment we used the result of a k-means with 10 clusters over the feature view. \alberto{We did not systematically benchmarked the two strategies in the \textit{iris} experiment. Nevertheless, this second strategy is, in general, more convenient in order to arrive earlier to the true target distribution.}
+For the first two experiments we initialized our samplers with all users in the same cluster. For the \textit{iris} experiment we used the result of a k-means with 10 clusters over the feature view. \alberto{We did not systematically benchmarked the two initialisation strategies. Nevertheless, this second strategy is, in general, more convenient in order to arrive earlier to the true target distribution.}
 \begin{table}[ht]
 \caption{Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the feature view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.} 
  \begin{center}
@@ -608,7 +608,7 @@ Finally, we assumed that the final length of a thread is a linear combination of
 \end{figure}
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{Fig3_results_agreement}%
+	\includegraphics[width=1\textwidth]{Fig3_results_agreement_bw}%
 	\caption{Results for agreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.}
 	\label{fig:results_agreement}
 \end{figure}
@@ -647,7 +647,7 @@ Figure \ref{fig:results_agreement} shows how increasing the threads vs users rat
 \begin{figure*}
 	\centering
 
-	\includegraphics[width=1\textwidth]{Fig6_results_disagreement}%
+	\includegraphics[width=1\textwidth]{Fig6_results_disagreement_bw}%
 	\caption{Results for disagreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads) when the two views see a different number of clusters. Means and standard errors over 5 runs.}
 	\label{fig:results_disagreement}
 \end{figure*}
@@ -682,7 +682,7 @@ For the predictions, the dual models still outperform the single one because the
 \end{figure}
 \begin{figure}
 	\centering
-	\includegraphics[width=1\textwidth]{Fig8_results_iris}
+	\includegraphics[width=1\textwidth]{Fig8_results_iris_bw}
 	\caption{Results for the iris dataset. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.}
 	\label{fig:iris_results}
 \end{figure}

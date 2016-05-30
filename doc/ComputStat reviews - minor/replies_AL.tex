@@ -177,7 +177,7 @@ Our print issue by default gets published in grayscale (unless you want to pay f
 	\textbf{Q15}: Maybe explain why different initialization schemes are used for the two experiments and the iris dataset.
 
 	\textcolor{blue}{  
-	\textbf{A15}: Different initialization schemes are used to show that the inference for this model is not too sensitive to different initializations, though the k-means strategy would be in general a smarter choice than initializing with a single cluster. We added some discussion at the end of Section 5.1 (page 11).
+	\textbf{A15}: Since an exhaustive comparison of initialization strategies is out of the scope of the paper, we wanted to at least illustrate that the inference for this model (and the used datasets) is not too sensitive to different initializations. We added some discussion at the end of Section 5.1 (page 11).
 	} 
 
 	
@@ -193,7 +193,7 @@ Our print issue by default gets published in grayscale (unless you want to pay f
 	\textbf{Q17}: Regarding the additional analysis using the iris dataset it would be good to better motivate it. Please specify which observations are included, which variables are included and more clearly explain why it was complemented with artificial data and not a real dataset was used which already contains all required features for applying the proposed model. When evaluating the results it would be good to point out that the class labels are used as ground truth for evaluation while, however, it is unclear in cluster analysis if recovering true class labels is necessarily the aim.
 
 	\textcolor{blue}{  
-	\textbf{A17}:  We have specified the three variables used and explained that we use a random subsample of 50 observations so that the clustering really needs the behavior data to improve the results.  (page 17) We have also added some discussion on why we chose the iris dataset and not real forum data (before Section 5.1, page 10).
+	\textbf{A17}:  We have specified the three variables used and explained that we use a random subsample of 50 observations so that the clustering really needs the behavior data to improve the results.  (page 17) We have also added some discussion on why we chose the iris dataset and not real forum data (before Section 5.1, page 10). Regarding the ground truth, please note that we do not use the class label to evaluate the results, but the pairwise coincidences (through the ARI index).
 	} 
 	
 	\vspace{3mm}
