@@ -4,8 +4,8 @@
 \BOOKMARK [2][]{subsection.2.2}{Dual-view mixture model}{section.2}% 4
 \BOOKMARK [2][]{subsection.2.3}{Infinite number of clusters}{section.2}% 5
 \BOOKMARK [1][]{section.3}{Application to role detection in online forums}{}% 6
-\BOOKMARK [2][]{subsection.3.1}{Features view}{section.3}% 7
-\BOOKMARK [2][]{subsection.3.2}{Behaviors view}{section.3}% 8
+\BOOKMARK [2][]{subsection.3.1}{Feature view}{section.3}% 7
+\BOOKMARK [2][]{subsection.3.2}{Behavior view}{section.3}% 8
 \BOOKMARK [2][]{subsection.3.3}{Shared parameters}{section.3}% 9
 \BOOKMARK [1][]{section.4}{Inference}{}% 10
 \BOOKMARK [2][]{subsection.4.1}{Predictive distribution}{section.4}% 11
@@ -19,10 +19,10 @@
 \BOOKMARK [2][]{subsection.5.7}{Summary of the experiments}{section.5}% 19
 \BOOKMARK [1][]{section.6}{Conclusions}{}% 20
 \BOOKMARK [1][]{appendix.A}{Chinese Restaurant Process}{}% 21
-\BOOKMARK [1][]{appendix.B}{Conditionals for the features view}{}% 22
+\BOOKMARK [1][]{appendix.B}{Conditionals for the feature view}{}% 22
 \BOOKMARK [2][]{subsection.B.1}{Component parameters}{appendix.B}% 23
 \BOOKMARK [2][]{subsection.B.2}{Shared hyper-parameters}{appendix.B}% 24
-\BOOKMARK [1][]{appendix.C}{Conditionals for the behaviors view}{}% 25
+\BOOKMARK [1][]{appendix.C}{Conditionals for the behavior view}{}% 25
 \BOOKMARK [2][]{subsection.C.1}{Users parameters}{appendix.C}% 26
 \BOOKMARK [2][]{subsection.C.2}{Component parameters}{appendix.C}% 27
 \BOOKMARK [2][]{subsection.C.3}{Shared hyper-parameters}{appendix.C}% 28

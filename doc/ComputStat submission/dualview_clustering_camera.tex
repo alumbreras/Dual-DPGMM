@@ -85,7 +85,7 @@
 \journalname{Comput Stat}
 
 \begin{document}
-\title{Clustering over user features and latent behavioral functions with dual-view mixture models}
+\title{Non-parametric clustering over user features and latent behavioral functions with dual-view mixture models}
 %\subtitle{Do you have a subtitle?\\ If so, write it here}
 %\titlerunning{Short form of title}        % if too long for running head
 
@@ -120,7 +120,7 @@
 
 \maketitle
 \begin{abstract}
-We present a dual-view mixture model to cluster users based on their features and latent behavioral functions. Every component of the mixture model represents a probability density over a feature view for observed user attributes and a behaviors view for latent behavioral functions that are indirectly observed through user actions or behaviors. Our task is to infer the groups of users as well as their latent behavioral functions. We also propose a non-parametric version based on a Dirichlet Process to automatically infer the number of clusters. We test the properties and performance of the model on a synthetic dataset that represents the participation of users in the threads of an online forum. Experiments show that dual-view models outperform single-view ones when one of the views lacks information.
+We present a dual-view mixture model to cluster users based on their features and latent behavioral functions. Every component of the mixture model represents a probability density over a feature view for observed user attributes and a behavior view for latent behavioral functions that are indirectly observed through user actions or behaviors. Our task is to infer the groups of users as well as their latent behavioral functions. We also propose a non-parametric version based on a Dirichlet Process to automatically infer the number of clusters. We test the properties and performance of the model on a synthetic dataset that represents the participation of users in the threads of an online forum. Experiments show that dual-view models outperform single-view ones when one of the views lacks information.
 \keywords{Multi-view clustering \and Model-based clustering \and Dirichlet Process (DP) \and Chinese Restaurant Process (CRP) }
 \end{abstract}
 
@@ -128,9 +128,11 @@ We present a dual-view mixture model to cluster users based on their features an
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}\label{sec:introduction}
 %%%%%%%%%% General problem of science 
-We consider the problem of clustering users over both their observed features and their latent behavioral functions. The goal is to infer both the clustering over users and their latent functions. Latent behavioral functions are used to model individual behaviors such as pairwise choices over products, reactions to medical treatments or user activities in online discussions. 
+We consider the problem of clustering users over both their observed features and their latent behavioral functions. The goal is to infer \alberto{the behavioral function of each user and a clustering of users that takes into account both their features and their behavioral functions. In our model, users in the same cluster are assumed to have similar features \textit{and} behavioral functions, and thus the inference of the clusters depends on the inference of the behavioral functions, and vice versa.} 
+
+Latent behavioral functions are used to model individual behaviors such as pairwise choices over products, reactions to medical treatments or user activities in online discussions. 
 % Motivation/Applications
-The inclusion of latent behavioral functions in clustering methods has several potential applications. On the one hand, it allows richer clusterings in settings where users, besides being described through feature vectors, also perform some observable actions that can be modelled as the output of a latent function. On the other hand, by assuming that users in the same cluster share similar latent functions, it may leverage inference of these functions. In the case, for instance, of recommender systems, this may be used to alleviate the \textit{cold-start problem} ---the fact that we cannot infer user preferences until they have interacted with the system for a while--- if we have a set of features describing user profiles.
+The inclusion of latent behavioral functions in clustering methods has several potential applications. On the one hand, it allows richer clusterings in settings where users, besides being described through feature vectors, also perform some observable actions that can be modelled as the output of a latent function. On the other hand, by assuming that users in the same cluster share similar latent functions, it may leverage inference of these functions. In the case, for instance, of recommender systems, this may be used to alleviate the \textit{cold-start problem} ---the fact that we cannot infer user preferences until they have interacted with the system for a while--- if we have a set of features describing user profiles. \alberto{In that context, a user with low activity will be given the same cluster than those users with similar features. Then, the inference of its behavioral function (e.g.: its preferences) will be based on the behavioral functions of the users in the same cluster.} 
 
 %%%% Sneak peak
 One of the difficulties in dealing with latent behavioral functions is that, since these functions are latent, they are not representable in a feature-like way and therefore traditional clustering methods are not directly applicable.
@@ -153,15 +155,18 @@ In this paper, we extend the idea of multi-view clustering to deal with cases wh
 The idea of using similarities in one view to enhance inference in the other view is not new. In bioinformatics, \cite{Eisen1998} found evidence suggesting that genes with similar DNA microarray expression data may have similar functions. \cite{Brown2000} exploit this evidence to train a Support Vector Machine (SVM) for each functional class and predict whether an unclassified gene belongs to that class given its expression data as an input. \cite{Pavlidis2002} extend the method of Brown et al. by also exploiting evidence that similar phylogenetic profiles between genes suggested a same functional class as well \citep{Pellegrini1999a}. Pavlidis et al. propose a multi-view SVM method that uses both types of gene data as input.
 
 % Multiple 
-More recently, \cite{Cheng2014} applied multi-view techniques to predict user labels in social networks such as LinkedIn (e.g., engineer, professor) or IMdB (e.g., directors, actors). Their method lies in the maximization of an objective function with a co-regularization that penalizes predictions of different labels for similar users. 
+More recently, \cite{Cheng2014} applied multi-view techniques to predict user labels in social networks such as LinkedIn (e.g., engineer, professor) or IMdB (e.g., directors, actors). Their method lies in the maximization of an objective function with a co-regularization that penalizes predictions of different labels for \alberto{users that are similar either in terms of profile features or in terms of graph connectivity}.
 
 % not relevant here
 %\cite{Krupka2008} establish a parallelism with supervised learning to study how well clustering over observed features generalizes to clustering over unobserved features. 
 
-In the context of preference learning, \cite{Bonilla2010} also work with the assumption that similar users may have similar preferences, and models this assumption via a Gaussian Process prior over user utility functions. This prior favors utility functions that account for user similarity and item similarity. To alleviate the computational cost of this model, \cite{Abbasnejad2013a} propose an infinite mixture of Gaussian Processes that generates utility functions for groups of users assuming that users in each community share one single utility function.
+In the context of preference learning, \cite{Bonilla2010} also work with the assumption that similar users may have similar preferences, and models this assumption via a Gaussian Process prior over user utility functions. This prior favors utility functions that account for user similarity and item similarity. To alleviate the computational cost of this model, \cite{Abbasnejad2013a} propose an infinite mixture of Gaussian Processes that generates utility functions for groups of users assuming that users in each community share one single utility function. 
+%
+\alberto{The main difference between our model and \cite{Abbasnejad2013a} in that their model clusters users only based on their utility functions while ours considers user features as well. In short, ours is a multi-view clustering model that also infers latent behavioral functions while theirs is a single-view model focused on the inference of latent functions.}
 
 %%% POSITIONING
-Our model is similar to \cite{Abbasnejad2013a} in that both are Bayesian approaches that model user latent behavioral functions via Dirichlet Process Mixture Models and that both use this mixture model to infer also the cluster assignment of every user. They differ in that their model clusters users only based on their utility functions while ours considers user features as well. In short, ours is a multi-view clustering model that also infers latent behavioral functions while theirs is a single-view model focused on the inference of latent functions. 
+% Itts worth mentioning model 
+%Our model is similar to \cite{Abbasnejad2013a} in that both are Bayesian approaches that model user latent behavioral functions via Dirichlet Process Mixture Models and that both use this mixture model to infer also the cluster assignment of every user. They differ in that their model clusters users only based on their utility functions while ours considers user features as well. In short, ours is a multi-view clustering model that also infers latent behavioral functions while theirs is a single-view model focused on the inference of latent functions. 
 
 %%% Structure of the paper
 The paper is structured as follows: first, we briefly recall mixture models. Second, we present our model as an extension of classic mixture models. The description of the model ends up with a generalization to an infinite number of clusters, which makes the model non-parametric. We finally describe an application to cluster users in online forums and end the paper with experiments on synthetic data to demonstrate the properties of the model.
@@ -178,14 +183,14 @@ When a set of observations $x_1,x_2,...x_n$ cannot be properly fitted by a singl
 x_i | z_i, \boldsymbol{\theta}_{z_i} &\sim F(\boldsymbol{\theta}_{z_i})\notag\\
 z_i &\sim \text{Discrete}(\boldsymbol{\pi})
 \end{align}
-where $\boldsymbol{\pi} = \{p_1,...p_k\}$ contains the probability of belonging to each component and $F$ is the likelihood function over the observations. In Bayesian settings it is common to add priors over these parameters, resulting in a model such as:
+where \alberto{$\boldsymbol{\pi} = (\pi_1,...\pi_K)$} contains the probability of belonging to each component and $F$ is the likelihood function over the observations. In Bayesian settings it is common to add priors over these parameters, resulting in a model such as:
 \begin{align}
 x_i | z_i, \boldsymbol{\theta}_{z_i} &\sim F(\boldsymbol{\theta}_{z_i})\notag\\
 \boldsymbol{\theta}_j &\sim G_0\notag\\
 z_i | \boldsymbol{\pi} &\sim \text{Discrete}(\boldsymbol{\pi})\notag\\
 \boldsymbol{\pi} &\sim \text{Dirichlet}(\alpha)
 \end{align}
-where $G_0$ is the \emph{base distribution} and $\alpha$ the \textit{concentration parameter}. Mixture models are mostly used for \textit{density estimation}. Nonetheless, inference over $\mathbf{z}$ allows to use them as \textit{clustering} methods. In this case, every component is associated to a cluster.
+where $G_0$ is the \emph{base distribution} and $\alpha$ the \textit{concentration parameter}. Mixture models are mostly used for \textit{density estimation}. Nonetheless, inference over $\mathbf{z}$ allows to use them as \textit{clustering} methods. In this case, every component \alberto{is often} associated to a cluster.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -196,15 +201,15 @@ In this section, we present an extension of mixture models to account both for f
 Let $\mathbf{a}_u$ be the set of (observed) features of user $u$. Let $f_u$ be a (latent) function of user $u$. Let $y_u$ be the (observed) outcome of $f_u$. By slightly adapting the notation from last section we can describe the variables of our dual model as follows: 
 
 \begin{align}
-a_u | z_u, \boldsymbol{\theta}_{z_u}^{\text{(a)}} &\sim F^{\text{(a)}}(\boldsymbol{\theta}_{z_u}^{\text{(a)}})\notag\\
+\mathbf{a}_u | z_u, \boldsymbol{\theta}_{z_u}^{\text{(a)}} &\sim F^{\text{(a)}}(\boldsymbol{\theta}_{z_u}^{\text{(a)}})\notag\\
 f_u | z_u, \boldsymbol{\theta}_{z_u}^{\text{(f)}} &\sim F^{\text{(f)}}(\boldsymbol{\theta}_{z_u}^{\text{(f)}})\notag\\
 y_u | f_u &\sim p(y_u | f_u)\notag\\
 \boldsymbol{\theta}_j^{\text{(a)}} &\sim G_0^{\text{(a)}}\notag\\
 \boldsymbol{\theta}_j^{\text{(f)}} &\sim G_0^{\text{(f)}}\notag\\
 z_u | \boldsymbol{\pi} &\sim \text{Discrete}(\boldsymbol{\pi})\notag\\
-\boldsymbol{\pi} &\sim \text{Dirichlet}(\boldsymbol{\alpha})
+\boldsymbol{\pi} &\sim \text{Dirichlet}(\alpha)
 \end{align}
-where we use the superindex $(a)$ for elements in the \textit{features view} and the superindex $(f)$ for elements in the latent functions view, henceforth \textit{behaviors view}. Otherwise, the structures are  similar except for $y_u$, which represents the set of observed behaviors for user $u$. The corresponding Probabilistic Graphical Model is shown in Figure \ref{fig:general}.
+where we use the superindex $(a)$ for elements in the \textit{feature view} and the superindex $(f)$ for elements in the latent functions view, henceforth \textit{behavior view}. Otherwise, the structures are  similar except for $y_u$, which represents the set of observed behaviors for user $u$. The corresponding Probabilistic Graphical Model is shown in Figure \ref{fig:general}.
 
 \begin{figure}
 \center
@@ -279,7 +284,7 @@ The model can also be expressed in terms of a generative process:
    \end{itemize}
 \end{itemize}
 
-Left and right branches of Figure \ref{fig:general}  correspond to the \textit{features view} and the \textit{behaviors view}, respectively. Note that every component contains two sets of parameters, one for features and one for behaviors, so that the two views can be generated from the same component. This encodes our prior assumption that users who belong to the same cluster should be similar in both views.
+Left and right branches of Figure \ref{fig:general}  correspond to the \textit{feature view} and the \textit{behavior view}, respectively. Note that every component contains two sets of parameters, one for features and one for behaviors, so that the two views can be generated from the same component. This encodes our prior assumption that users who belong to the same cluster should be similar in both views.
 
 
 % z decisions
@@ -326,16 +331,16 @@ Note also that inference of latent behavioral functions may be used for predicti
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Infinite number of clusters}\label{sec:CRP}
-So far, we have considered the number of components $K$ to be known. Nonetheless, if we let $K \rightarrow \infty$ and marginalize over the mixture weights $\boldsymbol{\pi}$, it becomes a Dirichlet Process (DP) based on a Chinese Restaurant Process (CRP) prior over the user assignments, which automatically infers the number of components (see the Appendix for the full derivation). Since we integrate out $\boldsymbol{\pi}$, user assignments are not independent anymore.
+So far, we have considered the number of components $K$ to be known. Nonetheless, if we let $K \rightarrow \infty$ and marginalize over the mixture weights $\boldsymbol{\pi}$, it becomes a \alberto{non-parametric model with a} Dirichlet Process (DP) based on a Chinese Restaurant Process (CRP) prior over the user assignments, which automatically infers the number of \textit{active} of components (see the Appendix for the full derivation). Since we integrate out $\boldsymbol{\pi}$, user assignments are not independent anymore.
 Instead, the probability of a user $u$ to be assigned to a non-empty (active) component $k$, given the assignments of all other users $\mathbf{z}_{-u}$, is:
 \begin{align}
-	p(z_u = k | \mathbf{z}_{-u}) &\propto n_k \qquad \text{ if } n_k > 0
+	p(z_u = k | \mathbf{z}_{-u}) &\propto n_k \qquad \text{ for } k = 1,...,c
 \end{align}
 %
-where $n_k$ is the number of users already assigned to that component. The probability of assigning a user $u$ to any of the infinite empty (non-active) components is: 
+\alberto{where $c$ denotes the number of non-empty components and $n_k$ is the number of users already assigned to the $k$-th component}. The probability of assigning a user $u$ to an empty (non-active) component, that would be labelled as $c+1$, is: 
 
 \begin{align}
-	p(z_u = k | \mathbf{z}_{-u}) &\propto \alpha \qquad \text{ if } n_k = 0
+	p(z_u = k | \mathbf{z}_{-u}) &\propto \alpha \qquad  \text{ for } k=c+1
 \end{align}
 %
 These two equations reflect a generative process that assigns users to clusters in \textit{a rich get richer} manner. The more users in a component, the more attractive this component becomes. Empty components also have a chance of being filled. 
@@ -350,12 +355,12 @@ Despite the appearance of these equations, the idea behind the inference of $\ma
 % From general case to our particular use case.
 The above model provides a general framework that can be adapted to many scenarios. In this section, we apply our model to the clustering of users in online forums. Clustering users in online communities may be used for latent \textit{role detection}. Although clustering based on user features may provide interesting insights, we think that the notion of \textit{role} should include information that allows to predict behaviors. After all, this is what roles are useful for. We expect that a person holding a role behaves according to their role.
 
-% Features view and behaviors view
-Let us specify the two views of our model for this scenario. Let $\mathcal{U} = \{u_1, u_2,...,u_U\}$ be a set of users who participate in a forum composed of $\mathcal{T} = \{t_1,t_2,...t_T \}$ discussion threads. For the features view, we describe every user through a feature vector $\mathbf{a}_u=\{a_1, a_2,...,a_D\}$ that will typically contain features such as centrality metrics or number of posts. For the behaviors view, we define a latent behavioral function that we call \textit{catalytic power} and denote by $b_u$, which represents the ability of a user to promote long discussions; we refer to $\mathbf{b}$ as the vector of all user catalytic powers. Let the \textit{participation vector} of the discussion thread $\mathbf{p}_t = (p_{1t},...,p_{Ut})$ be a binary array indicating which users participated among the first $m$ posts of each thread. Assuming  that the dynamic of a discussion is strongly conditioned by the first participants, we model the final length of a thread $y_t$:
+% feature view and behavior view
+Let us specify the two views of our model for this scenario, given $U$ users who participate in a forum composed of $T$ discussion threads. For the feature view, we describe every user through a feature vector \alberto{$\mathbf{a}_u=(a_{u1}, a_{u2},...,a_{uD})^T$} that will typically contain features such as centrality metrics or number of posts. For the behavior view, we define a latent behavioral function that we call \textit{catalytic power} and denote by $b_u$, which represents the ability of a user to promote long discussions; we refer to $\mathbf{b}$ as the vector of all user catalytic powers. Let the \textit{participation vector} of the discussion thread $\mathbf{p}_t = (p_{1t},...,p_{Ut})^T$ be a binary array indicating which users participated among the first $m$ posts of the thread $t$. Assuming  that the dynamic of a discussion is strongly conditioned by the first participants, we model the final length of a thread $y_t$:
 \begin{equation*}
 y_t \sim \mathcal{N}(\mathbf{p}_t^T\mathbf{b}, s_{\text{y}}^{-1})
 \end{equation*} 
-where $\mathbf{p}_t^T\mathbf{b}$ is the cummulated catalytic power of users who participated in its first $m$ posts and $s_{\text{y}}$ represents the precision (inverse of the variance) of the unknown level of noise.
+where $\mathbf{p}_t^T\mathbf{b}$ is the cumulated catalytic power of users who participated in its first $m$ posts and $s_{\text{y}}$ represents the precision (inverse of the variance) of the unknown level of noise.
 
 % What does the model infer
 If the assumption that there exist groups of users sharing similar features and similar catalytic power holds, then our model will not only find a clustering based on features and behaviors (catalytic powers), but it will also exploit feature information to infer catalytic powers and, vice versa, the inferred catalytic powers will be treated by the model as an extra feature dimension.
@@ -364,8 +369,8 @@ If the assumption that there exist groups of users sharing similar features and 
 Note that, unlike the model presented in Figure \ref{fig:general}, the observed output $y_t$ is common to all users who participated in the first $m$ posts of thread $t$. Moreover, $y_t$ depends on the observed participations $\mathbf{p_t}$. We also defined the noise factor $s_{\text{y}}$ which was not explicitly present in the general model. The graphical model would be similar to that of Figure~\ref{fig:general} but with the thread lengths $\mathbf{y}$, the participation matrix $\mathbf{P}$ and the noise $s_{\text{y}}$ out of the users plate. In the remaining of this section we provide more details about the components of the two views.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Features view}\label{sec:forums_features}
-In this section we specify the component parameters $\boldsymbol{\theta}_k^{\text{(a)}}$ and the base distribution $G_0^{\text{(a)}}$ of the features view. Our choice of priors follows that of the Infinite Gaussian Mixture Model (IGMM) as described by  \cite{Rasmussen2000a} and  \cite{Gorur2010}.
+\subsection{Feature view}\label{sec:forums_features}
+In this section we specify the component parameters $\boldsymbol{\theta}_k^{\text{(a)}}$ and the base distribution $G_0^{\text{(a)}}$ of the feature view. Our choice of priors follows that of the Infinite Gaussian Mixture Model (IGMM) as described by  \cite{Rasmussen2000a} and  \cite{Gorur2010}.
 
 The feature vectors are assumed to come from a mixture of Gaussian distributions: 
 \begin{align}
@@ -392,8 +397,8 @@ where $\boldsymbol{\mu_a}$ and $\boldsymbol{\Sigma_a}$ are the mean and covarian
 Conjugate priors are chosen whenever possible to make the posteriors analytically accessible. As for $\betaoa$, the prior in Equation \ref{eq:gamma_ba0} guarantees that the degrees of freedom in the Wishart distribution in Equation~\ref{eq:wishart_sar} are greater than or equal to $D-1$. The density $p(\betaoa)$ is obtained by a simple transformation of variables (see Appendix).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Behaviors view}\label{sec:forums_behaviors}
-In this section we specify the component parameters $\boldsymbol{\theta}_k^{\text{(f)}}$ and the base distribution $G_0^{\text{(f)}}$ of the behaviors view. Our choice corresponds to a Bayesian linear regression where coefficients are drawn not from a single multivariate Gaussian but from a \emph{mixture} of one-dimensional Gaussians.
+\subsection{Behavior view}\label{sec:forums_behaviors}
+In this section we specify the component parameters $\boldsymbol{\theta}_k^{\text{(f)}}$ and the base distribution $G_0^{\text{(f)}}$ of the behavior view. Our choice corresponds to a Bayesian linear regression where coefficients are drawn not from a single multivariate Gaussian but from a \emph{mixture} of one-dimensional Gaussians.
 
 The thread lengths are assumed to come from a Gaussian distribution whose mean is determined by the catalytic power of users who participated in the first posts and whose variance represents the unknown level of noise:
 \begin{align}
@@ -407,19 +412,19 @@ The power coefficients $b_u$ come from a mixture of Gaussians:
 \begin{align}
 b_u &\sim \mathcal{N}\left(\muzu, \invszu\right)
 \end{align}
-where the mean $\muzu$ and the precision $s_{b_{z_u}}$ are component parameters common to all users assigned to the same component $z_u$. The component parameters are given Normal and Gamma priors:
+where the mean $\muzu$ and the precision $\szu$ are component parameters common to all users assigned to the same component $z_u$. The component parameters are given Normal and Gamma priors:
 \begin{align}
 \muk &\sim  \mathcal{N}\left(\muo, \invro \right)\\
 \sk &\sim  \mathcal{G}\left( \betaof, \left(\betaof\wo\right)^{-1}\right) 
 \end{align}
-where the mean $\muo$, the precision $\ro$, the variance $\wo$, and the degrees of freedom $\betaof$ are hyperparameters common to all components. The hyperparameters themselves are given non-informative priors centered at the  data{\footnote{Since $b_u$ are not observed, we use a Maximum Likelihood Estimation with regularization: $\mathbf{\mathbf{\hat{b}}} = (\mathbf{P}\mathbf{P^T} + \lambda\mathbf{I})^{-1} \mathbf{P^T y} \;(\lambda=0.01)$ where $\mathbf{P}$ is the participation matrix $\mathbf{P} = \{\mathbf{p_1},...,\mathbf{p_T}\}$}}:
+where the mean $\muo$, the precision $\ro$, the variance $\wo$, and the degrees of freedom $\betaof$ are hyperparameters common to all components. \alberto{Because the coefficients are not observed, we cannot center the hyperparameters in the data as we did in the feature view. Instead, we use their Maximum Likelihood Estimates, computed as $\mathbf{\mathbf{\hat{b}}} = (\mathbf{P}\mathbf{P^T} + \lambda\mathbf{I})^{-1} \mathbf{P^T y}$, with a regularization parameter $\lambda=0.01$, where $\mathbf{P}$ is the participation matrix $\mathbf{P} = \{\mathbf{p_1},...,\mathbf{p_T}\}$. Then we hyperparameters are given non-informative priors centered at $\mathbf{\hat{b}}$}:
 \begin{align}
 \muo &\sim \mathcal{N}(\mu_{\hat{b}}, \sigma_{\hat{b}}^2) \\
 \ro &\sim \mathcal{G}(1, \sigma_{\hat{b}}^{-2})\\
 \wo  &\sim \mathcal{G}(1, \sigma_{\hat{b}}^{2})\\
 \frac{1}{\betaof}&\sim \mathcal{G}(1, 1)
 \end{align}
-where $\mu_{\hat{b}}$ and $\sigma_{\hat{b}}^2$ are the mean and the variance of the Maximum Likelihood Estimators $\mathbf{\hat{b}}$ of the coefficients. 
+where $\mu_{\hat{b}}$ and $\sigma_{\hat{b}}^2$ are the mean and the variance of the Maximum Likelihood Estimators $\mathbf{\hat{b}}$ of the coefficients. \alberto{Note that this choice is data-driven and, at the same time, the risk of overfitting is reduced since hyperparameters are high in the model hierarchy.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Shared parameters}\label{sec:sharedparams}
@@ -428,11 +433,11 @@ As for the common variables $\mathbf{z}$ and $\alpha$, $\mathbf{z}$ is given a C
 \label{eq:prior_z_CRP}
 p(z_u = k | \mathbf{z}_{-u}, \alpha) \propto 
 \begin{cases}
-n_{k} & \text{if } n_{k}>0 \\
-\alpha & \text{if } n_{k}=0
+n_{k} & \text{for } k=1,...,c\\
+\alpha & \text{for } k=c+1
 \end{cases}
 \end{align}
-and the concentration parameter $\alpha$ is given a vague inverse gamma prior:
+\alberto{where $c$ denotes the number of non-empty components before the assignment of $z_u$ and $n_k$ is the number of users already assigned to the $k$-th component}. The concentration parameter $\alpha$ is given a vague inverse gamma prior:
 \begin{align*}
 \frac{1}{\alpha} \sim \mathcal{G}(1,1)
 \end{align*}
@@ -457,16 +462,16 @@ The latent parameters of our model can be inferred by using Gibbs sampling, and 
 Since we use conjugate priors for almost all the variables, their conditional probabilities given all the other variables are analytically accessible. The degrees of freedom $\betaoa, \betaof$ and the concentration parameter $\alpha$ can be sampled by Adaptive Rejection Sampling \citep{Gilks1992}, which exploits the log-concavity of  $p(\log \beta_0^{\text{(a)}} | \cdot)$,  $p(\log \beta_0^{\text{(f)}} | \cdot)$ and $p(\log \alpha | \cdot)$ (see Appendix). As for the sampling of $\mathbf{z}$, the conditional probability of assigning user $u$ to an active component $k$ is proportional to the prior times the likelihoods:
 
 \begin{align}
-p(z_u = k  &\text{ for all } k \text{ s.t } n_{k}>0 | \mathbf{z_{-u}}, \alpha, \cdot)
+p(z_u = k | \mathbf{z_{-u}}, \alpha, \cdot)
 %\\&
 \propto 
 n_{k}
    p(\mathbf{a}_{u} |\Muk, \Sk)    
-   p({b_u} | \muk, \sk) 
+   p({b_u} | \muk, \sk) \qquad \text{for } k=1,...,c
 \end{align}
-and for the conditional probability of assigning $z_u$ to any of the inactive components:
+and for the conditional probability of assigning $z_u$ to a non-active component:
 \begin{align}
-p(z_u \neq k \text{ for all } k \text{ s.t } n_{k}=0 | \mathbf{z}_{-u}, \alpha, \cdot)
+p(z_u = k | \mathbf{z}_{-u}, \alpha, \cdot)
 %\\
 \propto&
 \;\alpha 
@@ -479,9 +484,9 @@ p(z_u \neq k \text{ for all } k \text{ s.t } n_{k}=0 | \mathbf{z}_{-u}, \alpha, 
    p(b_u | \muk, \sk)
    p(\muk)p(\sk) 
    \text{d}\muk
-   \text{d}\sk
+   \text{d}\sk \qquad \text{for } k=c+1
 \end{align}
-Unfortunately, these integrals are not analytically tractable because the product of the factors does not give a familiar distribution. \cite{Neal2000} proposes to create $m$ auxiliary empty components with parameters drawn from the base distribution, and then computing the likelihoods of $\mathbf{a}$ and $\mathbf{b}$ given those parameters. The higher the $m$, the closer we will be to the real integral and the less autocorrelated the cluster assignments will be. However, the equilibrium distribution of the Markov Chain is exactly correct for any value of $m$. To speed up the computations, $m$ is usually small. For our experiments, we chose $m=3$. That is, we generate $3$ additional empty tables each one with its own parameters  $\boldsymbol{\mu'}, \mathbf{S'}, \mu', s'$.
+Unfortunately, these integrals are not analytically tractable because the product of the factors does not give a familiar distribution. \cite{Neal2000} proposes to create $m$ auxiliary empty components with parameters drawn from the base distribution, and then computing the likelihoods of $\mathbf{a}$ and $\mathbf{b}$ given those parameters. The higher the $m$, the closer we will be to the real integral and the less autocorrelated the cluster assignments will be. However, the equilibrium distribution of the Markov Chain is exactly correct for any value of $m$. To speed up the computations, $m$ is usually small. For our experiments, we chose $m=3$. That is, we generate $3$ additional empty tables each one with its own parameters  $\boldsymbol{\mu'}, \mathbf{S'}, \mu', s'$. \alberto{We also run some experiments with $m=4$ and $m=5$, without observing significant differences neither in the clustering nor the predictions, while it significantly increased the computational time. See \cite{Neal2000} for a more systematic study on the effect of $m$}. 
 
 
 \subsection{Predictive distribution}
@@ -509,17 +514,20 @@ where $\boldsymbol{\theta}^{(i)}$ are the $i$-th samples of $\mathbf{b}$ and $\s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Experiments}\label{sec:experiments}
-We generated three scenarios to study in which situations dual-view models outperform single-view ones. The data reproduces the scenario of online forums presented in Section~\ref{sec:forums}. In the first scenario, users belong to five clusters and those who belong to the same cluster in one view also share the same cluster in the other view (\textit{agreement between views}). In the second scenario, users belong to five clusters in the behaviors view but two of the clusters are completely overlapped in the features view (\textit{disagreement between views}). In order to reproduce a more realistic clustering structure, in the last scenario user features and coefficients are taken from the \textit{iris dataset}.
+We generated three scenarios to study in which situations dual-view models outperform single-view ones. The data reproduces the scenario of online forums presented in Section~\ref{sec:forums}. In the first scenario, users belong to five clusters and those who belong to the same cluster in one view also share the same cluster in the other view (\textit{agreement between views}). In the second scenario, users belong to five clusters in the behavior view but two of the clusters are completely overlapped in the feature view (\textit{disagreement between views}). In order to reproduce a more realistic clustering structure, in the last scenario user features and coefficients are taken from the \textit{iris dataset}. 
+
+\alberto{We will see in Section~\ref{sec:cost}, that the main bottleneck of the model is the sampling of the coefficients $b_1,...,b_U$ since there are obtained by sampling from a $U$-dimensional Gaussian distribution that requires, at each Gibbs iteration, inverting a $U\times U$ matrix to get its covariance. This issue would disappear if the inference of the behavioral function parameters for a user was independent from the parameters of the other users. In this paper, we use the \textit{iris} dataset to demonstrate the properties of the model as a whole, without making any statement on the convenience of the presented behavioral functions.} 
 
 %%%%%%%%%%%%%%%%%%
 \subsection{Compared models}
-We compared two dual-view models and one single-view model. We call them dual-fixed, dual-DP and single. The \texttt{dual-fixed} corresponds to the present model where the number of clusters is set to the ground truth (five clusters). The \texttt{dual-DP} corresponds to the present model where the number of clusters is also inferred (Section \ref{sec:CRP}). The \texttt{single} model corresponds to a Bayesian linear regression over the coefficients $\mathbf{b}$, which is equivalent to the behaviors view specified in Section \ref{sec:forums_behaviors} where the number of clusters is set to one (that is, no clusters at all) and therefore there is no information flowing from the features view to the behaviors view; this model can only learn the latent coefficients $\mathbf{b}$.
+We compared two dual-view models and one single-view model. We call them dual-fixed, dual-DP and single. The \texttt{dual-fixed} corresponds to the present model where the number of clusters is set to the ground truth (five clusters). The \texttt{dual-DP} corresponds to the present model where the number of clusters is also inferred (Section \ref{sec:CRP}). The \texttt{single} model corresponds to a Bayesian linear regression over the coefficients $\mathbf{b}$, which is equivalent to the behavior view specified in Section \ref{sec:forums_behaviors} where the number of clusters is set to one (that is, no clusters at all) and therefore there is no information flowing from the feature view to the behavior view; this model can only learn the latent coefficients $\mathbf{b}$.
 
 Table \ref{tab:models} presents these three models as well as other related models that appear when blinding the models from one of the views. Note that we left out of the analysis those models that use clustering but are blinded of one view. The first two of these (IGMM and GMM), are regular clustering methods over feature vectors; we discarded them because they do not make inferences on latent behaviors. The last two (we call them latent-IGMM and latent-GMM) are Bayesian linear regressions where coefficients are assumed to come from a mixture of Gaussians; because these are in practice very similar to a simple Bayesian linear regression (they can be seen as Bayesian linear regressions with priors that tend to create groups of coefficients), we chose to benchmark only against the \texttt{single} model.
 
-Posterior distributions of parameters are obtained by Gibbs sampling. After some initial runs and examinations of the chains\footnote{We examined the traces with the \texttt{coda} package in R and used Geweke's test for the converge diagnostics.} to see how long it took to converge to the stationary distribution for the dual models, we set a fixed number of 30,000 samples for every run, from which the first 15000 are discarded as burn-in samples.\footnote{Convergence for all the models is usually reached before 5000 samples. But since we run a large number of automatized experiments we chose a conservative burn-in of 15000 samples.} 
-For the first two experiments we initialized our samplers with all users in the same cluster. For the \textit{iris} experiment we used the result of a k-means with 10 clusters over the features view.
+Posterior distributions of parameters are obtained by Gibbs sampling. \alberto{We used the \texttt{coda} package in R \citep{coda} to examine the traces of the Gibbs sampler. For the convergence diagnostics, we used Geweke's test available in the same package.} After some initial runs and examinations of the chains to see how long it took to converge to the stationary distribution for the dual models, \alberto{we observed that convergence for all the models is usually reached before 5,000 samples. Since we run a large number of automatized experiments}, we set a conservative number of 30,000 samples for every run, from which the first 15,000 are discarded as burn-in samples. 
+For the first two experiments we initialized our samplers with all users in the same cluster. For the \textit{iris} experiment we used the result of a k-means with 10 clusters over the feature view. \alberto{We did not systematically benchmarked the two strategies in the \textit{iris} experiment. Nevertheless, this second strategy is, in general, more convenient in order to arrive earlier to the true target distribution.}
 \begin{table}[ht]
+\caption{Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the feature view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.} 
  \begin{center}
    \tabcolsep = 1\tabcolsep
    \begin{tabular}{lccc}
@@ -537,7 +545,7 @@ For the first two experiments we initialized our samplers with all users in the 
    \textbf{single}     & no  & yes   & 1 \\   
    \hline
    \end{tabular}
-\caption{Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the features view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.} \label{tab:models}
+\label{tab:models}
  \end{center}
 \end{table}
 
@@ -568,20 +576,20 @@ and that can be approximated from Equation~\ref{eq:predictive_posterior_approx}.
 \subsection{Agreement between views}
 To set up the first scenario, for a set of $U$ users and five clusters we generated an assignment $z_u$ to one of the clusters so that the same number of users is assigned to every cluster.
 % Generate features
-Once all assignments $\mathbf{z}$ had been generated, we generated the data for each of the views. For the features view, every user was given a two-dimensional feature vector $\mathbf{a}_u=(a_{u_1}, a_{u_2})^T$ drawn independently from:
+Once all assignments $\mathbf{z}$ had been generated, we generated the data for each of the views. For the feature view, every user was given a two-dimensional feature vector $\mathbf{a}_u=(a_{u_1}, a_{u_2})^T$ drawn independently from:
 	\begin{equation}
 	\mathbf{a}_u \sim \mathcal{N}\left(\boldsymbol{\mu}_{z_u}, \Sigma_a \right)
 	\end{equation}
 where
 	$\mu_{z_u}=\left(\cos(2\pi \frac{z_u}{5}), \sin(2\pi \frac{z_u}{5})\right)^T \text{for } z_u=1,..,5$
-(see Figure~\ref{fig:data_agreement}). For the behaviors view, every user was given a coefficient drawn independently from:
+(see Figure~\ref{fig:data_agreement}). For the behavior view, every user was given a coefficient drawn independently from:
 \begin{equation}
 b_u \sim \mathcal{N}(-50 +25z_u, \sigma^2) 
 \qquad\qquad \text{for } z_u=1,..,5
 \end{equation}
 where coefficients for users in the same cluster are generated from the same Normal distribution and the means of these distributions are equidistantly spread in a [-200,200] interval (see Figure~\ref{fig:data_agreement}).
 % Participations
-To simulate users participations in a forum we generated, for each user $u$, a binary vector $\mathbf{p}_u = (p_{u1},...,p_{uT})$ of length $T$ that represents in which threads the user participated among the first $m$ posts. We supposed each user participated in average in half the threads.
+To simulate users participations in a forum we generated, for each user $u$, a binary vector $\mathbf{p}_u = (p_{u1},...,p_{uT})^T$ of length $T$ that represents in which threads the user participated among the first $m$ posts. We supposed each user participated in average in half the threads.
 \begin{equation}
 p_{ut} \sim \text{Bernoulli}(0.5)
 \end{equation}
@@ -606,12 +614,14 @@ Finally, we assumed that the final length of a thread is a linear combination of
 \end{figure}
 
 
-If both views agree and there is enough data for both of them, we expect dual models to find the true clusters and true latent coefficients, and the single model to find also the true latent coefficients. In this case, the features view brings no competitive advantage when there is enough information in the behaviors view (and conversely, dual models should not outperform simple IGMM and GMM for the clustering task since there is enough information in the features view).
+If both views agree and there is enough data for both of them, we expect dual models to find the true clusters and true latent coefficients, and the single model to find also the true latent coefficients. In this case, the feature view brings no competitive advantage when there is enough information in the behavior view (and conversely, dual models should not outperform simple IGMM and GMM for the clustering task since there is enough information in the feature view).
 
 %%%%
 On the contrary, when one of the views lacks information, then dual-view models should outperform single-view ones. In our model, the lack of information may come either from having too few threads to learn from or from having a high ratio of users versus threads since we have too many user behavior coefficients to learn. 
 
-Figure \ref{fig:results_agreement} shows how increasing the threads vs users ratio affects the accuracy of each model. When the number of threads is too low with respect to the number of users neither view has enough information and thus the three models make bad predictions the inference is difficult for the three models. Yet, dual-view models need less threads than the single model to make good inferences. When the number of threads is high enough, the three models tend to converge\footnote{The number of users and threads in the experiments ranges from 10 to 100 users and from 10 to 100 threads. We avoided larger numbers to prevent the experiments from taking too long. 30,000 iterations of the Gibbs sampler described in Section~\ref{sec:inference} for 50 users and 100 threads take around three hours in a Pentium Intel Core i7-4810MQ @2.80GHz. Nevertheless, the ratio users/threads remains realistic. In the real forums that we analyzed from \texttt{www.reddit.com} a common ratio is 1/10 for a window of one month.}.
+Figure \ref{fig:results_agreement} shows how increasing the threads vs users ratio affects the accuracy of each model. When the number of threads is too low with respect to the number of users neither view has enough information and thus the three models make bad predictions the inference is difficult for the three models. Yet, dual-view models need less threads than the single model to make good inferences. When the number of threads is high enough, the three models tend to converge.
+
+\alberto{The number of users and threads in the experiments ranges from 10 to 100 users and from 10 to 100 threads. We avoided larger numbers to prevent the experiments from taking too long. 30,000 iterations of the Gibbs sampler described in Section~\ref{sec:inference} for 50 users and 100 threads take around three hours in a Pentium Intel Core i7-4810MQ @2.80GHz. Nevertheless, the ratio users/threads remains realistic. In the real forums that we analyzed from \texttt{www.reddit.com} a common ratio is 1/10 for a window of one month.}
 %%%
 \subsection{Disagreement between views}
 
@@ -630,7 +640,7 @@ Figure \ref{fig:results_agreement} shows how increasing the threads vs users rat
 		{Fig5b.eps}}%
 	\subfloat[]{\includegraphics[width=0.33\textwidth]
 		{Fig5c.eps}}
-	\caption{Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\hat{\pi}$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the features view receives misguiding information from the behaviors view and the number of threads is not high enough to compensate for it.}
+	\caption{Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\hat{\pi}$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the feature view receives misguiding information from the behavior view and the number of threads is not high enough to compensate for it.}
 	\label{fig:confused}
 \end{figure}
 
@@ -644,24 +654,24 @@ Figure \ref{fig:results_agreement} shows how increasing the threads vs users rat
 
 
 
-If each view suggests a different clustering $\mathbf{z}$, dual models should find a consensus between them (recall Equation \ref{eq:z_posterior}). We generated a new dataset (Figure \ref{fig:data_disagreement}) where there are four clusters according to the features view and five clusters according to the behaviors view.
+If each view suggests a different clustering $\mathbf{z}$, dual models should find a consensus between them (recall Equation \ref{eq:z_posterior}). We generated a new dataset (Figure \ref{fig:data_disagreement}) where there are four clusters according to the feature view and five clusters according to the behavior view.
 
-Figure~\ref{fig:confused} shows the posterior distributions (over thread lengths and over pairwise clustering) when (a) the behaviors view has more information (b) both views lack data (c) the features view has more information. By \textit{having more information} we mean that a view dominates the inference over the posterior of the clustering $\mathbf{z}$. 
+Figure~\ref{fig:confused} shows the posterior distributions (over thread lengths and over pairwise clustering) when (a) the behavior view has more information (b) both views lack data (c) the feature view has more information. By \textit{having more information} we mean that a view dominates the inference over the posterior of the clustering $\mathbf{z}$. 
 
-\paragraph{(a) Lack of information in features view:}
-If the number of users is low but they participated in a sufficient number of threads, the behaviors view (which sees five clusters) will be stronger than the features view (which sees four clusters) and will impose a clustering in five groups. User coefficients (used for thread length predictions) are also well estimated since the number of threads is high enough to learn them despite the lack of help from the other view (Figure~\ref{fig:confused}a).
+\paragraph{(a) Lack of information in feature view:}
+If the number of users is low but they participated in a sufficient number of threads, the behavior view (which sees five clusters) will be stronger than the feature view (which sees four clusters) and will impose a clustering in five groups. User coefficients (used for thread length predictions) are also well estimated since the number of threads is high enough to learn them despite the lack of help from the other view (Figure~\ref{fig:confused}a).
 
 \paragraph{(b) Lack of information in both views:}
 In the middle ground where neither view has enough evidence, the model recovers four clusters and the predictive posterior over thread lengths gets wider though still making good inferences (Figure~\ref{fig:confused}b).
 
-\paragraph{(c) Lack of information in behaviors view:}
-If the number of users is high and the number of threads is low, the features view (four clusters) will have more influence in the posterior than the behaviors view (five clusters), (Figure~\ref{fig:confused}c). Predictions get worse because the model imposes a four clusters prior over coefficients that are clearly grouped in five clusters.
+\paragraph{(c) Lack of information in behavior view:}
+If the number of users is high and the number of threads is low, the feature view (four clusters) will have more influence in the posterior than the behavior view (five clusters), (Figure~\ref{fig:confused}c). Predictions get worse because the model imposes a four clusters prior over coefficients that are clearly grouped in five clusters.
 
 In order to compare between the performance in case of agreement and the performance in case of disagreement, we repeated the experiments of the last section with the current configuration. 
-Figure~\ref{fig:results_disagreement} shows the performance of the models for 50 users and a different number of threads. While predictions and clustering improve with the number of threads, clustering with a small number of threads is worse in case of disagreement since the features view imposes its 4 clusters vision. To recover the five clusters we would need either more  threads or less users.
+Figure~\ref{fig:results_disagreement} shows the performance of the models for 50 users and a different number of threads. While predictions and clustering improve with the number of threads, clustering with a small number of threads is worse in case of disagreement since the feature view imposes its 4 clusters vision. To recover the five clusters we would need either more  threads or less users.
 
  
-For the predictions, the dual models still outperform the single one because the features view mostly agrees with the behaviors view except for the users in one of the clusters. If all user features were in the same cluster, (no clustering structure) the performance of the predictions would be similar for the three models since the features view would add no extra information. If we randomize the features so that, for instance, there are five clusters in the features view that are very different from the clusters in the behaviors view, we may expect the dual-view  models to give worse predictions than the single-view one in those cases where they now perform better. In those cases, dual-models would be getting noise in the features view (or very bad priors) and only a large enough number of threads could compensate for it.
+For the predictions, the dual models still outperform the single one because the feature view mostly agrees with the behavior view except for the users in one of the clusters. If all user features were in the same cluster, (no clustering structure) the performance of the predictions would be similar for the three models since the feature view would add no extra information. If we randomize the features so that, for instance, there are five clusters in the feature view that are very different from the clusters in the behavior view, we may expect the dual-view  models to give worse predictions than the single-view one in those cases where they now perform better. In those cases, dual-models would be getting noise in the feature view (or very bad priors) and only a large enough number of threads could compensate for it.
 
 \subsection{Iris dataset}
 \begin{figure}
@@ -677,7 +687,7 @@ For the predictions, the dual models still outperform the single one because the
 	\label{fig:iris_results}
 \end{figure}
 
-To reproduce a more realistic clustering structure we performed a last experiment where user features correspond to three of the features of the \textit{iris} dataset (Figure \ref{fig:iris_data}). The coefficients of the behaviors view are similar to those used in the former experiments. We run a standard EM-GMM\footnote{We used the R package \texttt{mclust}.} over the features to have an idea of what we should expect from our model when there are almost no threads and the coefficients are difficult to infer. We also run the same EM-GMM over the features and the true coefficients to have an idea of what we should expect from our model when the number of threads is high enough to make a good inference of the coefficients. This gave us an ARI of 0.48 and 0.79, respectively. Indeed, starting nearer to 0.48 when the number of threads is small, our model gets closer to 0.79 as we keep adding threads (Figure \ref{fig:iris_results}). Of course, the inference of the coefficients and thus the predictions over the test set also improve by increasing the number of threads. Since the single model does not take profit of the feature view, it needs more threads to reach the same levels than its dual counterparts. Figure~\ref{fig:iris_posteriors} shows two examples of confusion matrices and predicted lengths for 10 and 100 threads.
+To reproduce a more realistic clustering structure we performed a last experiment \alberto{based on the \textit{iris} dataset. We used the \textit{iris} data available in R, which corresponds to the original dataset reported in \cite{IrisData1935}}. In our experiment, features correspond to three of the features of the \textit{iris} dataset (Figure \ref{fig:iris_data}). \alberto{We chose three out of the four features (sepal width, petal length and petal width) as well as a random subset of 50 observations so that the clustering task is harder if only the feature view is used}. The coefficients of the behavior view are similar to those used in the former experiments. We run a standard EM-GMM, \alberto{from the R package \texttt{mclust} \citep{mclust}}, over the features to have an idea of what we should expect from our model when there are almost no threads and the coefficients are difficult to infer. We also run the same EM-GMM over the features and the true coefficients to have an idea of what we should expect from our model when the number of threads is high enough to make a good inference of the coefficients. This gave us an ARI of 0.48 and 0.79, respectively. Indeed, starting nearer to 0.48 when the number of threads is small, our model gets closer to 0.79 as we keep adding threads (Figure \ref{fig:iris_results}). Of course, the inference of the coefficients and thus the predictions over the test set also improve by increasing the number of threads. Since the single model does not take profit of the feature view, it needs more threads to reach the same levels than its dual counterparts. Figure~\ref{fig:iris_posteriors} shows two examples of confusion matrices and predicted lengths for 10 and 100 threads.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{Fig9_iris_posterior_10}%
@@ -694,7 +704,7 @@ To reproduce a more realistic clustering structure we performed a last experimen
 
 Figure~\ref{fig:nclusters} shows the histogram of the number of clusters within the MCMC chain and the distribution of cluster sizes. The model infers three clusters but it also places some probability over a two clusters structure due to the closeness of two of the clusters in the feature view.  
 
-\subsection{Computational cost}
+\subsection{Computational cost}\label{sec:cost}
 % Comment on autocorrelations, convergence...
 We analyzed the computational cost of the \texttt{dual-DP} model since it is the most complex of the three compared. Unlike the \texttt{single} model, it makes inferences in the two views, meaning about twice the number of variables.  And unlike the \texttt{fixed-dual}, it has to infer the number of cluster and does it by creating $m$ empty candidate clusters every time we sample a cluster assignment for a user at each iteration of the Gibbs sampler. This means creating $U \times iterations \times m$ empty clusters and computing, as many times, whether a user belongs to one of these auxiliary clusters ($m$ possible extra clusters at each iteration), which makes it the slowest of the three models in terms of time per iteration.
 
@@ -717,8 +727,8 @@ To summarize, the experiments show on the one hand that dual-view models outperf
 \section{Conclusions}\label{sec:conclusions}
 % Model summary
 
-We presented a dual-view mixture model to cluster users based on features and latent behavioral functions. Every component of the mixture model represents a probability density over two \textit{views}: a features view for observed user attributes and a
-behaviors view for latent behavioral functions that are indirectly observed through user actions or behaviors. The posterior distribution of the clustering represents a consensual clustering between the two views. Inference of the parameters in each view depends on the other view through this common clustering, which can be seen as a proxy that passes information between the views. An appealing property of the model is that inference on latent behavioral functions may be used to make predictions of users future behaviors. We presented two versions of the model: a parametric one where the number of clusters is treated as a fixed parameter and a nonparametric, based on a Dirichlet Process, where the number of clusters is also inferred.
+We presented a dual-view mixture model to cluster users based on features and latent behavioral functions. Every component of the mixture model represents a probability density over two \textit{views}: a feature view for observed user attributes and a
+behavior view for latent behavioral functions that are indirectly observed through user actions or behaviors. The posterior distribution of the clustering represents a consensual clustering between the two views. Inference of the parameters in each view depends on the other view through this common clustering, which can be seen as a proxy that passes information between the views. An appealing property of the model is that inference on latent behavioral functions may be used to make predictions of users future behaviors. We presented two versions of the model: a parametric one where the number of clusters is treated as a fixed parameter and a nonparametric, based on a Dirichlet Process, where the number of clusters is also inferred.
 
 % Results and findings
 We have adapted the model to a hypothetical case of online forums where behaviors correspond to the ability of users to generate long discussions. We clustered users and inferred their behavioral functions in three datasets to understand the properties of the model. We inferred the posteriors of interest by Gibbs sampling for all the variables but two of them which were inferred by Adapted Rejection Sampling. Experiments confirm that the proposed dual-view model is able to learn with less instances than its single-view counterpart due to the fact that dual-view models use more information. Moreover, inferences with the dual-view model based on a Dirichlet Process are as good as inferences with the parametric model even if the latter knows the true number of clusters.
@@ -739,7 +749,7 @@ Finally, in order to apply the model to large scale data we will also explore al
 \section{Chinese Restaurant Process}
 In this section we recall the derivation of a Chinese Restaurant Process. Such a process will be used as the prior over cluster assignments in the model. This prior will then be updated through the likelihoods of the observations through the different views. 
 
-Imagine that every user $u$ belongs to one of $K$ clusters. $z_u$ is the cluster of user $u$ and $\mathbf{z}$ is a vector that indicates the cluster of every user. Let us assume that $z_u$ is a random variable drawn from a multimomial distribution with probabilities $\boldsymbol{\pi}= \pi_1,...,\pi_K$. Let us also assume that the vector $\boldsymbol{\pi}$ is a random variable drawn from a Dirichlet distribution with a symmetric concentration parameter $\boldsymbol{\alpha} = \alpha/K,...,\alpha/K$. We have: 
+Imagine that every user $u$ belongs to one of $K$ clusters. $z_u$ is the cluster of user $u$ and $\mathbf{z}$ is a vector that indicates the cluster of every user. Let us assume that $z_u$ is a random variable drawn from a multimomial distribution with probabilities $\boldsymbol{\pi}= (\pi_1,...,\pi_K)$. Let us also assume that the vector $\boldsymbol{\pi}$ is a random variable drawn from a Dirichlet distribution with a symmetric concentration parameter $\boldsymbol{\alpha} = (\alpha/K,...,\alpha/K)$. We have: 
 \begin{align*}
 z_u | \boldsymbol{\pi} &\sim \text{Multinomial}(\boldsymbol{\pi})\notag\\
 \boldsymbol{\pi} &\sim \text{Dirichlet}(\boldsymbol{\alpha})
@@ -880,8 +890,8 @@ p(z_u = j \text{ s.t } n_{-j}=0 | \mathbf{z_{-u}})
 where $p$ is the number of non-empty components.
 It can be shown that the generative process composed of a Chinese Restaurant Process were every component $j$ is associated to a probability distribution with parameters $\boldsymbol{\theta}_j$ is equivalent to a Dirichlet Process.
 
-\section{Conditionals for the features view}
-In this appendix we provide the conditional distributions for the features view to be plugged into the Gibbs sampler. Note that, except for $\betaoa$, conjugacy can be exploited in every case and therefore their derivations are straightforward and well known. The derivation for $\betaoa$ is left for another section:
+\section{Conditionals for the feature view}
+In this appendix we provide the conditional distributions for the feature view to be plugged into the Gibbs sampler. Note that, except for $\betaoa$, conjugacy can be exploited in every case and therefore their derivations are straightforward and well known. The derivation for $\betaoa$ is left for another section:
 \subsection{Component parameters}
 \subsubsection*{Components means $p(\Muk | \cdot )$:}
 \begin{align*}
@@ -898,7 +908,7 @@ p\left(\Muk | \Muo, \invRo\right)
 where:
 \begin{align*}
 \boldsymbol{\Lambda'} &= \Ro + n_k \Sk\\ 
-\boldsymbol{\mu'} &= \boldsymbol{\Lambda'^{-1}} \left(\Ro \Muo + \Sk \sum_{u\in k} a_u\right)
+\boldsymbol{\mu'} &= \boldsymbol{\Lambda'^{-1}} \left(\Ro \Muo + \Sk \sum_{u\in k} \mathbf{a}_u\right)
 \end{align*}
 
 \subsubsection*{Components precisions $p(\Sk | \cdot )$:}
@@ -989,8 +999,8 @@ p(\betaoa) \prod_{k=1}^K p\left(\Sk | \Wo ,  \betaoa\right)\\
 where there is no conjugacy we can exploit. We may sample from this distribution with Adaptive Rejection Sampling.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conditionals for the behaviors view}
-In this appendix we provide the conditional distributions for the behaviors view to be plugged into the Gibbs sampler. Except for $\beta_{b_0}$, conjugacy can be exploited in every case and therefore their derivations straightforward and well known. The derivation for $\beta_{b_0}$ is left for another section:
+\section{Conditionals for the behavior view}
+In this appendix we provide the conditional distributions for the behavior view to be plugged into the Gibbs sampler. Except for $\beta_{b_0}$, conjugacy can be exploited in every case and therefore their derivations straightforward and well known. The derivation for $\beta_{b_0}$ is left for another section:
 \subsection{Users parameters}
 \subsubsection*{Users latent coefficient $p(b_u | \cdot )$:}
 
@@ -1143,7 +1153,7 @@ p(s_{\text{y}} | 1,\sigma_{0}^{-2}) \prod_{t=1}^T p(y_t | \mathbf{p^T b}, s_{\te
 
 %%%%%%%%%%%%
 \section{Sampling $\betaoa$}
-For the features view, if:
+For the feature view, if:
 \begin{align*}
 \frac{1}{\beta - D + 1} \sim \mathcal{G}(1, \frac{1}{D})
 \end{align*}
@@ -1234,7 +1244,7 @@ where $\Psi(x)$ is the digamma function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \section{Sampling $\betaof$}
-For the behaviors view, if 
+For the behavior view, if 
 \begin{align*}
 	\frac{1}{\beta} \sim \mathcal{G}(1,1)
 \end{align*}

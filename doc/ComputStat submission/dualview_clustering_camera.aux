@@ -52,13 +52,14 @@
 \citation{Rasmussen2000a}
 \citation{Gorur2010}
 \citation{Gorur2010}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Features view}{7}{subsection.3.1}}
-\newlabel{sec:forums_features}{{3.1}{7}{Features view}{subsection.3.1}{}}
-\newlabel{eq:wishart_sar}{{10}{7}{Features view}{equation.3.10}{}}
-\newlabel{eq:gamma_ba0}{{14}{7}{Features view}{equation.3.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Behaviors view}{8}{subsection.3.2}}
-\newlabel{sec:forums_behaviors}{{3.2}{8}{Behaviors view}{subsection.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Feature view}{7}{subsection.3.1}}
+\newlabel{sec:forums_features}{{3.1}{7}{Feature view}{subsection.3.1}{}}
+\newlabel{eq:wishart_sar}{{10}{7}{Feature view}{equation.3.10}{}}
+\newlabel{eq:gamma_ba0}{{14}{7}{Feature view}{equation.3.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Behavior view}{8}{subsection.3.2}}
+\newlabel{sec:forums_behaviors}{{3.2}{8}{Behavior view}{subsection.3.2}{}}
 \citation{Gilks1992}
+\citation{Neal2000}
 \citation{Neal2000}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Shared parameters}{9}{subsection.3.3}}
 \newlabel{sec:sharedparams}{{3.3}{9}{Shared parameters}{subsection.3.3}{}}
@@ -69,77 +70,84 @@
 \newlabel{eq:predictive_posterior_approx}{{28}{10}{Predictive distribution}{equation.4.28}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Experiments}{10}{section.5}}
 \newlabel{sec:experiments}{{5}{10}{Experiments}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Compared models}{10}{subsection.5.1}}
+\citation{coda}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Compared models}{11}{subsection.5.1}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the feature view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.\relax }}{11}{table.caption.2}}
+\newlabel{tab:models}{{1}{11}{Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the feature view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.\relax }{table.caption.2}{}}
 \citation{Dahl2006}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the features view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.\relax }}{11}{table.caption.2}}
-\newlabel{tab:models}{{1}{11}{Compared and related models. Both single models are the same since if the number of clusters is fixed to one they cannot use the features view. The row marked as $-$ corresponds to a model that has no interest in this context since it simply finds the Gaussian distribution that best fits the observed features and makes neither clustering nor predictions.\relax }{table.caption.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Metrics}{11}{subsection.5.2}}
-\@writefile{toc}{\contentsline {paragraph}{Metric for clustering:}{11}{section*.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Metrics}{12}{subsection.5.2}}
+\@writefile{toc}{\contentsline {paragraph}{Metric for clustering:}{12}{section*.3}}
 \@writefile{toc}{\contentsline {paragraph}{Metric for predictions:}{12}{section*.4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Agreement between views}{12}{subsection.5.3}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Dataset for agreement between the views. User features (left) and user coefficients (right). Every group (color) of users has a well differentiated set of features and coefficients.\relax }}{13}{figure.caption.5}}
 \newlabel{fig:data_agreement}{{2}{13}{Dataset for agreement between the views. User features (left) and user coefficients (right). Every group (color) of users has a well differentiated set of features and coefficients.\relax }{figure.caption.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Results for agreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }}{13}{figure.caption.6}}
-\newlabel{fig:results_agreement}{{3}{13}{Results for agreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }{figure.caption.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Dataset for disagreement between the views. User features (left) and user coefficients (right). Two of the groups (color) of users have similar features but different coefficients.\relax }}{14}{figure.caption.7}}
-\newlabel{fig:data_disagreement}{{4}{14}{Dataset for disagreement between the views. User features (left) and user coefficients (right). Two of the groups (color) of users have similar features but different coefficients.\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Results for agreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }}{14}{figure.caption.6}}
+\newlabel{fig:results_agreement}{{3}{14}{Results for agreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }{figure.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Disagreement between views}{14}{subsection.5.4}}
-\@writefile{toc}{\contentsline {paragraph}{(a) Lack of information in features view:}{14}{section*.10}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\mathaccentV {hat}05E{\pi }$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the features view receives misguiding information from the behaviors view and the number of threads is not high enough to compensate for it.\relax }}{15}{figure.caption.8}}
-\newlabel{fig:confused}{{5}{15}{Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\hat {\pi }$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the features view receives misguiding information from the behaviors view and the number of threads is not high enough to compensate for it.\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{(a) Lack of information in feature view:}{14}{section*.10}}
+\@writefile{toc}{\contentsline {paragraph}{(b) Lack of information in both views:}{14}{section*.11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Dataset for disagreement between the views. User features (left) and user coefficients (right). Two of the groups (color) of users have similar features but different coefficients.\relax }}{15}{figure.caption.7}}
+\newlabel{fig:data_disagreement}{{4}{15}{Dataset for disagreement between the views. User features (left) and user coefficients (right). Two of the groups (color) of users have similar features but different coefficients.\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\mathaccentV {hat}05E{\pi }$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the feature view receives misguiding information from the behavior view and the number of threads is not high enough to compensate for it.\relax }}{15}{figure.caption.8}}
+\newlabel{fig:confused}{{5}{15}{Posteriors for DP-dual when the two views see a different number of clusters. (a) 10 users and 100 threads. (b) 25 users and 25 threads. (c) 100 users and 10 threads. Figures on the left: examples of posterior distributions of thread length predictions over 100 test threads with 50\% and 95\% credible intervals in test set with 50 users and 10, 50 and 100 threads. x-axis correspond to threads sorted by their (true) length while y-axis correspond to predicted thread lengths. True lengths are plotted in red. Figures on the right: examples of posterior pairwise clustering matrices $\hat {\pi }$. x-axes and y-axes correspond to the users. A dark point means a high probability of being in the same cluster. The worst case is (c), which makes a similar clustering to (b) but worse predictions, because the feature view receives misguiding information from the behavior view and the number of threads is not high enough to compensate for it.\relax }{figure.caption.8}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {}}}{15}{subfigure.5.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {}}}{15}{subfigure.5.2}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(c)}{\ignorespaces {}}}{15}{subfigure.5.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Results for disagreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads) when the two views see a different number of clusters. Means and standard errors over 5 runs.\relax }}{15}{figure.caption.9}}
-\newlabel{fig:results_disagreement}{{6}{15}{Results for disagreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads) when the two views see a different number of clusters. Means and standard errors over 5 runs.\relax }{figure.caption.9}{}}
-\@writefile{toc}{\contentsline {paragraph}{(b) Lack of information in both views:}{15}{section*.11}}
-\@writefile{toc}{\contentsline {paragraph}{(c) Lack of information in behaviors view:}{15}{section*.12}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Iris dataset. User features (left) and synthetic user coefficients (right)\relax }}{16}{figure.caption.13}}
-\newlabel{fig:iris_data}{{7}{16}{Iris dataset. User features (left) and synthetic user coefficients (right)\relax }{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{(c) Lack of information in behavior view:}{15}{section*.12}}
+\citation{IrisData1935}
+\citation{mclust}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Results for disagreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads) when the two views see a different number of clusters. Means and standard errors over 5 runs.\relax }}{16}{figure.caption.9}}
+\newlabel{fig:results_disagreement}{{6}{16}{Results for disagreement between the views. Comparison of models under different threads/users ratios (50 users and variable number of threads) when the two views see a different number of clusters. Means and standard errors over 5 runs.\relax }{figure.caption.9}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Iris dataset}{16}{subsection.5.5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Iris dataset. User features (left) and synthetic user coefficients (right)\relax }}{17}{figure.caption.13}}
+\newlabel{fig:iris_data}{{7}{17}{Iris dataset. User features (left) and synthetic user coefficients (right)\relax }{figure.caption.13}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Results for the iris dataset. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }}{17}{figure.caption.14}}
 \newlabel{fig:iris_results}{{8}{17}{Results for the iris dataset. Comparison of models under different threads/users ratios (50 users and variable number of threads). Means and standard errors over 5 runs.\relax }{figure.caption.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Predictive posteriors given by the \texttt  {DP-dual} model over thread lengths and pairwise clustering matrices with 50 users and a training set of 10 threads (left) and 100 threads (right). Shadowed areas indicate 95\% and 50\% credible intervals. True lengths are plotted in red. As the number of thread increases, the model starts to see the three cluster structure as well as to make better predictions.\relax }}{17}{figure.caption.15}}
-\newlabel{fig:iris_posteriors}{{9}{17}{Predictive posteriors given by the \texttt {DP-dual} model over thread lengths and pairwise clustering matrices with 50 users and a training set of 10 threads (left) and 100 threads (right). Shadowed areas indicate 95\% and 50\% credible intervals. True lengths are plotted in red. As the number of thread increases, the model starts to see the three cluster structure as well as to make better predictions.\relax }{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Predictive posteriors given by the \texttt  {DP-dual} model over thread lengths and pairwise clustering matrices with 50 users and a training set of 10 threads (left) and 100 threads (right). Shadowed areas indicate 95\% and 50\% credible intervals. True lengths are plotted in red. As the number of thread increases, the model starts to see the three cluster structure as well as to make better predictions.\relax }}{18}{figure.caption.15}}
+\newlabel{fig:iris_posteriors}{{9}{18}{Predictive posteriors given by the \texttt {DP-dual} model over thread lengths and pairwise clustering matrices with 50 users and a training set of 10 threads (left) and 100 threads (right). Shadowed areas indicate 95\% and 50\% credible intervals. True lengths are plotted in red. As the number of thread increases, the model starts to see the three cluster structure as well as to make better predictions.\relax }{figure.caption.15}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Left: histogram of the number of active clusters estimated by the \texttt  {DP-model} in the \textit  {iris} scenario with 50 threads. Right: mean and standard deviations of the number of users assigned to each cluster during the chain. Most users are assigned to the three major clusters and a small group of users is assigned to a fourth cluster.\relax }}{18}{figure.caption.16}}
 \newlabel{fig:nclusters}{{10}{18}{Left: histogram of the number of active clusters estimated by the \texttt {DP-model} in the \textit {iris} scenario with 50 threads. Right: mean and standard deviations of the number of users assigned to each cluster during the chain. Most users are assigned to the three major clusters and a small group of users is assigned to a fourth cluster.\relax }{figure.caption.16}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Computational cost}{18}{subsection.5.6}}
-\citation{Abbasnejad2013a}
+\newlabel{sec:cost}{{5.6}{18}{Computational cost}{subsection.5.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Summary of the experiments}{19}{subsection.5.7}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusions}{19}{section.6}}
 \newlabel{sec:conclusions}{{6}{19}{Conclusions}{section.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Chinese Restaurant Process}{20}{appendix.A}}
-\newlabel{eq:p_z}{{35}{20}{Chinese Restaurant Process}{equation.A.35}{}}
-\newlabel{eq:z_cond}{{36}{20}{Chinese Restaurant Process}{equation.A.36}{}}
-\newlabel{eq:p_z_minus}{{37}{20}{Chinese Restaurant Process}{equation.A.37}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Conditionals for the features view}{21}{appendix.B}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Component parameters}{21}{subsection.B.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Shared hyper-parameters}{22}{subsection.B.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Conditionals for the behaviors view}{23}{appendix.C}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Users parameters}{23}{subsection.C.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Component parameters}{23}{subsection.C.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}Shared hyper-parameters}{24}{subsection.C.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.4}Regression noise}{25}{subsection.C.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Sampling $\beta _{0}^\text  {(a)}$}{25}{appendix.D}}
+\citation{Abbasnejad2013a}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Chinese Restaurant Process}{21}{appendix.A}}
+\newlabel{eq:p_z}{{35}{21}{Chinese Restaurant Process}{equation.A.35}{}}
+\newlabel{eq:z_cond}{{36}{21}{Chinese Restaurant Process}{equation.A.36}{}}
+\newlabel{eq:p_z_minus}{{37}{21}{Chinese Restaurant Process}{equation.A.37}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Conditionals for the feature view}{22}{appendix.B}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.1}Component parameters}{22}{subsection.B.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {B.2}Shared hyper-parameters}{23}{subsection.B.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Conditionals for the behavior view}{24}{appendix.C}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Users parameters}{24}{subsection.C.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}Component parameters}{24}{subsection.C.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.3}Shared hyper-parameters}{25}{subsection.C.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.4}Regression noise}{26}{subsection.C.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Sampling $\beta _{0}^\text  {(a)}$}{26}{appendix.D}}
 \bibstyle{spbasic}
 \bibdata{library}
 \bibcite{Abbasnejad2013a}{{1}{2013}{{Abbasnejad et~al}}{{Abbasnejad, Sanner, Bonilla, and Poupart}}}
-\@writefile{toc}{\contentsline {section}{\numberline {E}Sampling $\beta _{0}^\text  {(f)}$}{27}{appendix.E}}
-\@writefile{toc}{\contentsline {section}{\numberline {F}Sampling $\alpha $}{27}{appendix.F}}
-\bibcite{SteffenandTobiasScheffer}{{2}{2004}{{Bickel and Scheffer}}{{}}}
-\bibcite{Bonilla2010}{{3}{2010}{{Bonilla et~al}}{{Bonilla, Guo, and Sanner}}}
-\bibcite{Brown2000}{{4}{2000}{{Brown et~al}}{{Brown, Grundy, Lin, Cristianini, Sugnet, Furey, Ares, and Haussler}}}
-\bibcite{Cheng2014}{{5}{2014}{{Cheng et~al}}{{Cheng, Agrawal, Choudhary, Liu, and Zhang}}}
-\bibcite{Cheung2004}{{6}{2004}{{Cheung et~al}}{{Cheung, Tsui, and Liu}}}
-\bibcite{Dahl2006}{{7}{2006}{{Dahl}}{{}}}
-\bibcite{Eisen1998}{{8}{1998}{{Eisen et~al}}{{Eisen, Spellman, Brown, and Botstein}}}
-\bibcite{Gilks1992}{{9}{1992}{{Gilks and Wild}}{{}}}
-\bibcite{Gorur2010}{{10}{2010}{{G\"{o}r\"{u}r and Rasmussen}}{{}}}
-\bibcite{Greene2009a}{{11}{2009}{{Greene and P\'{a}draig}}{{}}}
-\bibcite{Kumar2011}{{12}{2011}{{Kumar et~al}}{{Kumar, Rai, and Daume}}}
-\bibcite{Mitchell1998}{{13}{1998}{{Mitchell and Blum}}{{}}}
-\bibcite{Neal2000}{{14}{2000}{{Neal}}{{}}}
-\bibcite{Niu2012}{{15}{2012}{{Niu et~al}}{{Niu, Dy, and Ghahramani}}}
-\bibcite{Pavlidis2002}{{16}{2002}{{Pavlidis et~al}}{{Pavlidis, Weston, Cai, and Noble}}}
-\bibcite{Pellegrini1999a}{{17}{1999}{{Pellegrini et~al}}{{Pellegrini, Marcotte, Thompson, Eisenberg, and Yeates}}}
-\bibcite{Rasmussen2000a}{{18}{2000}{{Rasmussen}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {E}Sampling $\beta _{0}^\text  {(f)}$}{28}{appendix.E}}
+\@writefile{toc}{\contentsline {section}{\numberline {F}Sampling $\alpha $}{28}{appendix.F}}
+\bibcite{IrisData1935}{{2}{1935}{{Anderson}}{{}}}
+\bibcite{SteffenandTobiasScheffer}{{3}{2004}{{Bickel and Scheffer}}{{}}}
+\bibcite{Mitchell1998}{{4}{1998}{{Blum and Mitchell}}{{}}}
+\bibcite{Bonilla2010}{{5}{2010}{{Bonilla et~al}}{{Bonilla, Guo, and Sanner}}}
+\bibcite{Brown2000}{{6}{2000}{{Brown et~al}}{{Brown, Grundy, Lin, Cristianini, Sugnet, Furey, Ares, and Haussler}}}
+\bibcite{Cheng2014}{{7}{2014}{{Cheng et~al}}{{Cheng, Agrawal, Choudhary, Liu, and Zhang}}}
+\bibcite{Cheung2004}{{8}{2004}{{Cheung et~al}}{{Cheung, Tsui, and Liu}}}
+\bibcite{Dahl2006}{{9}{2006}{{Dahl}}{{}}}
+\bibcite{Eisen1998}{{10}{1998}{{Eisen et~al}}{{Eisen, Spellman, Brown, and Botstein}}}
+\bibcite{mclust}{{11}{2012}{{Fraley et~al}}{{Fraley, Raftery, Murphy, and Scrucca}}}
+\bibcite{Gilks1992}{{12}{1992}{{Gilks and Wild}}{{}}}
+\bibcite{Gorur2010}{{13}{2010}{{G\"{o}r\"{u}r and Rasmussen}}{{}}}
+\bibcite{Greene2009a}{{14}{2009}{{Greene and P\'{a}draig}}{{}}}
+\bibcite{Kumar2011}{{15}{2011}{{Kumar et~al}}{{Kumar, Rai, and Daume}}}
+\bibcite{Neal2000}{{16}{2000}{{Neal}}{{}}}
+\bibcite{Niu2012}{{17}{2012}{{Niu et~al}}{{Niu, Dy, and Ghahramani}}}
+\bibcite{Pavlidis2002}{{18}{2002}{{Pavlidis et~al}}{{Pavlidis, Weston, Cai, and Noble}}}
+\bibcite{Pellegrini1999a}{{19}{1999}{{Pellegrini et~al}}{{Pellegrini, Marcotte, Thompson, Eisenberg, and Yeates}}}
+\bibcite{coda}{{20}{2006}{{Plummer et~al}}{{Plummer, Best, Cowles, and Vines}}}
+\bibcite{Rasmussen2000a}{{21}{2000}{{Rasmussen}}{{}}}

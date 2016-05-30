@@ -1,4 +1,4 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{21}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{#1}}
 \providecommand{\urlprefix}{URL }
@@ -10,14 +10,24 @@
 
 \bibitem[{Abbasnejad et~al(2013)Abbasnejad, Sanner, Bonilla, and
   Poupart}]{Abbasnejad2013a}
-Abbasnejad E, Sanner S, Bonilla EV, Poupart P (2013) {Learning community-based
-  preferences via Dirichlet Process mixtures of Gaussian Processes}. In:
+Abbasnejad E, Sanner S, Bonilla EV, Poupart P (2013) Learning community-based
+  preferences via dirichlet process mixtures of gaussian processes. In:
   Proceedings of the 23rd International Joint Conference on Artificial
-  Intelligence
+  Intelligence, AAAI Press, IJCAI '13, pp 1213--1219
+
+\bibitem[{Anderson(1935)}]{IrisData1935}
+Anderson E (1935) {The Irises of the Gaspe Peninsula}. Bulletin of the American
+  Iris Society 59:2--5
 
 \bibitem[{Bickel and Scheffer(2004)}]{SteffenandTobiasScheffer}
-Bickel S, Scheffer T (2004) {Multi-view clustering}. In: Proceedings of the
-  Fourth IEEE International Conference on Data Mining, pp 19--26
+Bickel S, Scheffer T (2004) Multi-view clustering. In: Proceedings of the
+  Fourth IEEE International Conference on Data Mining, IEEE Computer Society,
+  Washington, DC, USA, ICDM '04, pp 19--26
+
+\bibitem[{Blum and Mitchell(1998)}]{Mitchell1998}
+Blum A, Mitchell T (1998) Combining labeled and unlabeled data with
+  co-training. In: Proceedings of the Eleventh Annual Conference on
+  Computational Learning Theory, ACM, New York, NY, USA, COLT' 98, pp 92--100
 
 \bibitem[{Bonilla et~al(2010)Bonilla, Guo, and Sanner}]{Bonilla2010}
 Bonilla EV, Guo S, Sanner S (2010) {Gaussian Process Preference Elicitation}.
@@ -54,6 +64,11 @@ Eisen MB, Spellman PT, Brown PO, Botstein D (1998) {Cluster analysis and
   display of genome-wide expression patterns}. Proceedings of the National
   Academy of Sciences of the USA 95(25):14,863--14,868
 
+\bibitem[{Fraley et~al(2012)Fraley, Raftery, Murphy, and Scrucca}]{mclust}
+Fraley C, Raftery AE, Murphy TB, Scrucca L (2012) mclust Version 4 for R:
+  Normal Mixture Modeling for Model-Based Clustering, Classification, and
+  Density Estimation
+
 \bibitem[{Gilks and Wild(1992)}]{Gilks1992}
 Gilks W, Wild P (1992) {Adaptive rejection sampling for Gibbs sampling}.
   Applied Statistics 41(2):337--348
@@ -73,11 +88,6 @@ Kumar A, Rai P, Daume H (2011) {Co-regularized Multi-view Spectral Clustering}.
   In: Shawe-Taylor J, Zemel RS, Bartlett PL, Pereira F, Weinberger KQ (eds)
   Advances in Neural Information Processing Systems 24, Curran Associates,
   Inc., pp 1413--1421
-
-\bibitem[{Mitchell and Blum(1998)}]{Mitchell1998}
-Mitchell T, Blum A (1998) {Combining labeled and unlabeled data with
-  co-training}. In: Proceedings of the Eleventh Annual Conference on
-  Computational Learning Theory, pp 92--100
 
 \bibitem[{Neal(2000)}]{Neal2000}
 Neal RM (2000) {Markov Chain Sampling Methods for Dirichlet Process Mixture
@@ -100,6 +110,10 @@ Pellegrini M, Marcotte EM, Thompson MJ, Eisenberg D, Yeates TO (1999)
   {Assigning protein functions by comparative genome analysis: protein
   phylogenetic profiles.} Proceedings of the National Academy of Sciences of
   the USA 96(8):4285--4288
+
+\bibitem[{Plummer et~al(2006)Plummer, Best, Cowles, and Vines}]{coda}
+Plummer M, Best N, Cowles K, Vines K (2006) Coda: Convergence diagnosis and
+  output analysis for mcmc. R News 6(1):7--11, {R} package version 0.18-1
 
 \bibitem[{Rasmussen(2000)}]{Rasmussen2000a}
 Rasmussen CE (2000) {The Infinite Gaussian Mixture Model}. In: Solla SA, Leen

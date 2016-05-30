@@ -443,10 +443,11 @@ FUNCTION {format.eprint}
   if$
 }
 FUNCTION {format.url}
-{ url empty$
-    { "" }
-    { "\urlprefix\url{" url * "}" * }
-  if$
+{ 
+%url empty$
+%    { "" }
+%    { "\urlprefix\url{" url * "}" * }
+%  if$
 }
 
 STRINGS  { bibinfo}
@@ -522,12 +523,13 @@ FUNCTION {format.editors}
   if$
 }
 FUNCTION {format.doi}
-{ doi "doi" bibinfo.check
-  duplicate$ empty$ 'skip$
-    {
-      "\doi{" swap$ * "}" *
-    }
-  if$
+{ 
+%doi "doi" bibinfo.check
+%  duplicate$ empty$ 'skip$
+%    {
+%      "\doi{" swap$ * "}" *
+%    }
+%  if$
 }
 FUNCTION {format.note}
 {
@@ -1656,4 +1658,3 @@ EXECUTE {end.bib}
 %% End of customized bst file
 %%
 %% End of file `spbasic.bst'.
-
