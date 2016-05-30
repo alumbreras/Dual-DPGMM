@@ -205,12 +205,13 @@ save.participations <- function(P, y, suffix="train"){
   write.table(as.data.frame(y), file=paste0(suffix, "_lengths_", U, ".csv"), sep= "\t", row.names = FALSE) 
 }
 
-plot.data <- function(A, b, z){    
-  p1 <- qplot(A[1,], A[2,]) +
-        geom_point(aes(colour = factor(z), size=b)) +
+plot.data <- function(A, b, z){
+  df <- data.frame(A1=A[1,], A2 = A[2,], b=b, z=z)
+  p1 <- ggplot(df, aes(x=A1,y=A2)) +
+        geom_point(size=2, aes(colour = factor(z), shape= factor(z))) +
         xlab('feature 1') +
         ylab('feature 2') +
-        theme(text = element_text(size = 15),
+        theme(text = element_text(size = 13),
               panel.background = element_blank(), 
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
@@ -219,11 +220,11 @@ plot.data <- function(A, b, z){
               legend.key = element_rect(fill = "white"), 
               legend.position="none")
 
-  p2 <- qplot(1:length(b), b) +
-        geom_point(aes(colour = factor(z))) +
-        xlab('users') +
-        ylab('b') +
-        theme(text = element_text(size = 15),
+  p2 <- ggplot(df, aes(x=1:length(b), y=b)) +
+          geom_point(size=2, aes(colour = factor(z), shape= factor(z))) +
+          xlab('users') +
+          ylab('b') +
+          theme(text = element_text(size = 13),
               panel.background = element_blank(), 
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
@@ -232,8 +233,10 @@ plot.data <- function(A, b, z){
               legend.key = element_rect(fill = "white"), 
               legend.position="none")
   
-  grid.arrange(p1, p2, ncol=2)
-  g <- arrangeGrob(p1, p2, ncol=2)
+  #grid.arrange(p1, p2, ncol=2)
+  #g <- arrangeGrob(p1, p2, ncol=2)
+  g <- plot_grid(p1, p2, ncol = 2, 
+                 align = 'v') # aligning does not work here
   g
 }
 
@@ -245,17 +248,18 @@ plot.real.data <- function(A, b, z){
   p1 <- ggpairs(A.df, columns= 1:3,
           upper = list(continuous = "points"),
           lower = list(continuous = "points"),
-          diag = list(continuous = "density"),
-          colours='z')+
+          diag = list(continuous = "densityDiag"),
+          ggplot2::aes(color = z))+
     theme(panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           aspect.ratio=1)
-  
-  p2 <- qplot(1:length(b), b) +
+
+  df <- data.frame(A1=A[1,], A2 = A[2,], b=b, z=z)
+  p2 <- ggplot(df, aes(x=1:length(b), y=b)) +
     geom_point(aes(colour = factor(z))) +
     xlab('users') +
     ylab('b') +
-    theme(text = element_text(size = 15),
+    theme(text = element_text(size = 13),
           panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -267,12 +271,33 @@ plot.real.data <- function(A, b, z){
   print(p1)
   g <- grid.grab() 
   grid.arrange(g, p2, widths=c(0.5,0.5))  
+  
+  g <- plot_grid(p1, p2, ncol = 2, 
+                 align = 'v') # aligning does not work here
+  g
+  ########################################
+  ########################################
+  # Simple alternative
+  #174 mm x 70 mm = 6.85 x 2.75
+  setEPS()
+  postscript("../doc/ComputStat submission/Fig7_data_iris_features_bw.eps")#,
+             #width = 6.85/2, height = 2.75)
+  pairs(A.df[,c(1,2,3)], col=z+1, pch=z+1, cex.lab=2, cex.axis=2)
+  dev.off()
+  
+  par(pty='s')
+  setEPS()
+  postscript("../doc/ComputStat submission/Fig7_data_iris_behaviors_bw.eps")#,
+             #width = 6.85/2, height = 2.75)
+  par(mar=c(5,5,4,1)+.1)
+  plot(1:length(b), b, col=z+1, pch=z+1, xlab="users", ylab="b", cex.lab=2, cex.axis=1.5)
+  dev.off()
 }
 
 ##########################################################
 # Main
 ##########################################################
-if (TRUE){
+if (FALSE){
   generators <- c(clear, disagreement, agreement)
   gen <- generators[[2]] # chose one of the three scenarios
   
@@ -341,4 +366,27 @@ if (FALSE){
   y_mle <- t(P_)%*%b_
   plot(y_mle[idx])
   title("reproduce with estimated coefficients")
+}
+
+
+# Plot saved user data
+if(FALSE){
+  df <- load.data("./agreement/data_users_50.csv")
+  g <- plot.data(t(df[,c(2,3)]), df$b, df$z)
+  ggsave("../doc/ComputStat submission/Fig2_data_agreement_bw.eps", 
+         device="eps", 
+         plot=g,
+         width = 174, height = 70, units = "mm")
+  print(g)
+  
+  df <- load.data("./iris/data_users_50.csv")
+  A <- t(df[,c(2,3,4)])
+  b <- df$b
+  z <- df$z
+  g <- plot.real.data(t(df[,c(2,3,4)]), df$b, df$z)
+  ggsave("../doc/ComputStat submission/Fig7_data_iris_bw.eps", 
+         device="eps", 
+         plot=g,
+         width = 174, height = 70, units = "mm")
+  
 }
