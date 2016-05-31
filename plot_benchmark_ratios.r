@@ -8,8 +8,9 @@ library(cowplot)
 options(warn=1)
 
 dataset <- "agreement"
-dataset <- 'iris'
 dataset <- "disagreement"
+dataset <- 'iris'
+
 
 path <- file.path("out", dataset)
 
@@ -45,7 +46,7 @@ p1 <- ggplot(df, aes(x= threads, y = neglog.mean, color=model)) +
                         labels=c("dual-DP", "dual-fixed", "single")) +
   guides(color=guide_legend(override.aes=list(shape=c(NA,NA, NA), linetype=c('solid', 'dashed', 'dotted')))) +
   
-  xlab('Threads') +
+  xlab('threads') +
   ylab('negative loglikelihood') +
   labs(color=NULL) +
   geom_errorbar(aes(ymin=neglog.mean-neglog.sd/2, ymax=neglog.mean+neglog.sd/2), width=1.2)+
@@ -58,10 +59,6 @@ p1 <- ggplot(df, aes(x= threads, y = neglog.mean, color=model)) +
         legend.key = element_blank(),
         aspect.ratio = 6/9,
         legend.position=c(0.8, 0.8))
-
-#print(p1)
-#g1 <- grid.grab() 
-
 
 # see also:
 #theme_classic()
@@ -104,7 +101,7 @@ p2 <- ggplot(df, aes(x= threads, y = ARI.mean, color=model)) +
                           labels=c("dual-DP", "dual-fixed")) +
     guides(color=guide_legend(override.aes=list(shape=c(NA,NA), linetype=c('solid', 'dashed')))) +
      geom_errorbar(aes(ymin=ARI.mean-ARI.sd/2, ymax=ARI.mean+ARI.sd/2), width=1.2) +
-     xlab('Threads') +
+     xlab('threads') +
      ylab('Adjusted Rand Index') +
      labs(color=NULL) +
      scale_x_continuous(breaks=df$threads) +
@@ -118,15 +115,12 @@ p2 <- ggplot(df, aes(x= threads, y = ARI.mean, color=model)) +
         aspect.ratio = 6/9,
         legend.position=c(0.8, 0.2))
 
-#print(p2)
-#g2 <- grid.grab() 
+
 
 g <- plot_grid(p1, p2, ncol = 2, 
-               align = 'v') # aligning does not work here
+               align = 'v') 
 
-
-#g <- grid.arrange(g1, g2, widths=c(0.5,0.5))  
-ggsave("./doc/ComputStat submission/Fig6_results_disagreement_bw.eps", 
+ggsave("./doc/ComputStat submission/Fig8_results_iris_bw.eps", 
        device="eps", 
        plot=g,
        #width = 20, height = 8, units = "cm")
