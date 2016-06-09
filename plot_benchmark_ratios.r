@@ -7,9 +7,20 @@ library(gridExtra)
 library(cowplot)
 options(warn=1)
 
+
+
+
+
 dataset <- "agreement"
-dataset <- "disagreement"
+outfile <- "./doc/ComputStat submission/Fig3_results_agreement_bw.eps"
+
 dataset <- 'iris'
+outfile <- "./doc/ComputStat submission/Fig8_results_iris_bw.eps"
+
+dataset <- "disagreement"
+outfile <- "./doc/ComputStat submission/Fig6_results_disagreement_bw.eps"
+
+
 
 
 path <- file.path("out", dataset)
@@ -37,14 +48,19 @@ names(df)[2] <- "threads"
 # Plot accuracy 
 p1 <- ggplot(df, aes(x= threads, y = neglog.mean, color=model)) + 
   geom_line(aes(linetype=model)) + 
-  geom_point(size=2) +
+  #geom_point(size=2) +
+  geom_point(size=2, aes(shape= factor(model))) +
   scale_color_manual(name= element_blank(),
                      values=c('black', 'red', 'blue'),
                      labels=c("dual-DP", "dual-fixed", "single")) +
   scale_linetype_manual(name= element_blank(),
                         values=c('solid', 'dashed', 'dotted'),
                         labels=c("dual-DP", "dual-fixed", "single")) +
-  guides(color=guide_legend(override.aes=list(shape=c(NA,NA, NA), linetype=c('solid', 'dashed', 'dotted')))) +
+  scale_shape_manual(name= element_blank(),
+                        values=c(19,1,15),
+                        labels=c("dual-DP", "dual-fixed", "single")) +
+  guides(color=guide_legend(override.aes=list(shape=c(19,1,15), 
+                                              linetype=c('solid', 'dashed', 'dotted')))) +
   
   xlab('threads') +
   ylab('negative loglikelihood') +
@@ -92,14 +108,18 @@ names(df)[2] <- "threads"
 
 # Plot accuracy 
 p2 <- ggplot(df, aes(x= threads, y = ARI.mean, color=model)) + 
-     geom_line(aes(linetype=model)) + geom_point(size=2) +
+     geom_line(aes(linetype=model)) + 
+     geom_point(size=2, aes(shape= factor(model))) +
     scale_color_manual(name= element_blank(),
                        values=c('black', 'red'),
                        labels=c("dual-DP", "dual-fixed")) +
     scale_linetype_manual(name= element_blank(),
                           values=c('solid', 'dashed'),
                           labels=c("dual-DP", "dual-fixed")) +
-    guides(color=guide_legend(override.aes=list(shape=c(NA,NA), linetype=c('solid', 'dashed')))) +
+  scale_shape_manual(name= element_blank(),
+                     values=c(19,1),
+                     labels=c("dual-DP", "dual-fixed", "single")) +
+    guides(color=guide_legend(override.aes=list(shape=c(19,1), linetype=c('solid', 'dashed')))) +
      geom_errorbar(aes(ymin=ARI.mean-ARI.sd/2, ymax=ARI.mean+ARI.sd/2), width=1.2) +
      xlab('threads') +
      ylab('Adjusted Rand Index') +
@@ -120,11 +140,12 @@ p2 <- ggplot(df, aes(x= threads, y = ARI.mean, color=model)) +
 g <- plot_grid(p1, p2, ncol = 2, 
                align = 'v') 
 
-ggsave("./doc/ComputStat submission/Fig8_results_iris_bw.eps", 
+ggsave(outfile, 
        device="eps", 
        plot=g,
        #width = 20, height = 8, units = "cm")
        width = 174, height = 70, units = "mm")
 
+print(g)
 # Springer instructions
 # For most journals the figures should be 39 mm, 84 mm, 129 mm, or 174 mm wide and not higher than 234 mm.

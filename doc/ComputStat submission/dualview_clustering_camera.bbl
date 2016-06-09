@@ -1,4 +1,4 @@
-\begin{thebibliography}{21}
+\begin{thebibliography}{24}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{{#1}}
 \providecommand{\urlprefix}{URL }
@@ -11,7 +11,7 @@
 \bibitem[{Abbasnejad et~al(2013)Abbasnejad, Sanner, Bonilla, and
   Poupart}]{Abbasnejad2013a}
 Abbasnejad E, Sanner S, Bonilla EV, Poupart P (2013) Learning community-based
-  preferences via dirichlet process mixtures of gaussian processes. In:
+  preferences via {D}irichlet process mixtures of {G}aussian processes. In:
   Proceedings of the 23rd International Joint Conference on Artificial
   Intelligence, AAAI Press, IJCAI '13, pp 1213--1219
 
@@ -30,7 +30,7 @@ Blum A, Mitchell T (1998) Combining labeled and unlabeled data with
   Computational Learning Theory, ACM, New York, NY, USA, COLT' 98, pp 92--100
 
 \bibitem[{Bonilla et~al(2010)Bonilla, Guo, and Sanner}]{Bonilla2010}
-Bonilla EV, Guo S, Sanner S (2010) {Gaussian Process Preference Elicitation}.
+Bonilla EV, Guo S, Sanner S (2010) {G}aussian process preference elicitation.
   In: Lafferty JD, Williams CKI, Shawe-Taylor J, Zemel RS, Culotta A (eds)
   Advances in Neural Information Processing Systems 23, Curran Associates,
   Inc., pp 262--270
@@ -38,85 +38,101 @@ Bonilla EV, Guo S, Sanner S (2010) {Gaussian Process Preference Elicitation}.
 \bibitem[{Brown et~al(2000)Brown, Grundy, Lin, Cristianini, Sugnet, Furey,
   Ares, and Haussler}]{Brown2000}
 Brown MPS, Grundy WN, Lin D, Cristianini N, Sugnet CW, Furey TS, Ares M,
-  Haussler D (2000) {Knowledge-based analysis of microarray gene expression
-  data by using support vector machines}. Proceedings of the National Academy
-  of Sciences of the USA 97(1):262--267
+  Haussler D (2000) Knowledge-based analysis of microarray gene expression data
+  by using support vector machines. Proceedings of the National Academy of
+  Sciences of the USA 97(1):262--267
 
 \bibitem[{Cheng et~al(2014)Cheng, Agrawal, Choudhary, Liu, and
   Zhang}]{Cheng2014}
-Cheng Y, Agrawal A, Choudhary A, Liu H, Zhang T (2014) {Social Role
-  Identification via Dual Uncertainty Minimization Regularization}. In: IEEE
+Cheng Y, Agrawal A, Choudhary A, Liu H, Zhang T (2014) Social role
+  identification via dual uncertainty minimization regularization. In: IEEE
   International Conference on Data Mining, IEEE, pp 767--772
 
 \bibitem[{Cheung et~al(2004)Cheung, Tsui, and Liu}]{Cheung2004}
-Cheung KW, Tsui KC, Liu J (2004) {Extended Latent Class Models for
-  Collaborative Recommendation}. IEEE Transactions on Systems, Man, and
-  Cybernetics, Part A: Systems and Humans 34(1):143--148
+Cheung KW, Tsui KC, Liu J (2004) Extended latent class models for collaborative
+  recommendation. IEEE Transactions on Systems, Man, and Cybernetics, Part A:
+  Systems and Humans 34(1):143--148
 
 \bibitem[{Dahl(2006)}]{Dahl2006}
-Dahl DB (2006) {Model-Based Clustering for Expression Data via a Dirichlet
-  Process Mixture Model}. In: Do KA, M\"{u}ller P, Vannucci M (eds) Bayesian
+Dahl DB (2006) Model-based clustering for expression data via a {D}irichlet
+  process mixture model. In: Do KA, M\"{u}ller P, Vannucci M (eds) Bayesian
   inference for gene expression and proteomics, Cambridge University Press, pp
   201--218
 
 \bibitem[{Eisen et~al(1998)Eisen, Spellman, Brown, and Botstein}]{Eisen1998}
-Eisen MB, Spellman PT, Brown PO, Botstein D (1998) {Cluster analysis and
-  display of genome-wide expression patterns}. Proceedings of the National
-  Academy of Sciences of the USA 95(25):14,863--14,868
+Eisen MB, Spellman PT, Brown PO, Botstein D (1998) Cluster analysis and display
+  of genome-wide expression patterns. Proceedings of the National Academy of
+  Sciences of the USA 95(25):14,863--14,868
 
 \bibitem[{Fraley et~al(2012)Fraley, Raftery, Murphy, and Scrucca}]{mclust}
 Fraley C, Raftery AE, Murphy TB, Scrucca L (2012) mclust Version 4 for R:
   Normal Mixture Modeling for Model-Based Clustering, Classification, and
-  Density Estimation
+  Density Estimation. \url{http://cran.r-project.org/package=mclust}
 
 \bibitem[{Gilks and Wild(1992)}]{Gilks1992}
-Gilks W, Wild P (1992) {Adaptive rejection sampling for Gibbs sampling}.
+Gilks W, Wild P (1992) Adaptive rejection sampling for {G}ibbs sampling.
   Applied Statistics 41(2):337--348
 
 \bibitem[{G\"{o}r\"{u}r and Rasmussen(2010)}]{Gorur2010}
-G\"{o}r\"{u}r D, Rasmussen CE (2010) {Dirichlet process gaussian mixture
-  models: Choice of the base distribution}. Journal of Computer Science and
+G\"{o}r\"{u}r D, Rasmussen CE (2010) Dirichlet process {G}aussian mixture
+  models: choice of the base distribution. Journal of Computer Science and
   Technology 25(July):653--664
 
 \bibitem[{Greene and P\'{a}draig(2009)}]{Greene2009a}
-Greene D, P\'{a}draig C (2009) {Multi-View Clustering for Mining Heterogeneous
-  Social Network Data}. In: Workshop on Information Retrieval over Social
+Greene D, P\'{a}draig C (2009) Multi-view clustering for mining heterogeneous
+  social network data. In: Workshop on Information Retrieval over Social
   Networks, 31st European Conference on Information Retrieval
 
+\bibitem[{Kamishima and Akaho(2009)}]{Kamishima2009}
+Kamishima T, Akaho S (2009) Efficient clustering for orders. In: Zighed DA,
+  Tsumoto S, Ras ZW, Hacid H (eds) Mining Complex Data, Springer Berlin
+  Heidelberg, pp 261--279
+
 \bibitem[{Kumar et~al(2011)Kumar, Rai, and Daume}]{Kumar2011}
-Kumar A, Rai P, Daume H (2011) {Co-regularized Multi-view Spectral Clustering}.
+Kumar A, Rai P, Daume H (2011) Co-regularized multi-view spectral clustering.
   In: Shawe-Taylor J, Zemel RS, Bartlett PL, Pereira F, Weinberger KQ (eds)
   Advances in Neural Information Processing Systems 24, Curran Associates,
   Inc., pp 1413--1421
 
 \bibitem[{Neal(2000)}]{Neal2000}
-Neal RM (2000) {Markov Chain Sampling Methods for Dirichlet Process Mixture
-  Models}. Journal of Computational and Graphical Statistics 9(2):249--265
+Neal RM (2000) Markov chain sampling methods for {D}irichlet process mixture
+  models. Journal of Computational and Graphical Statistics 9(2):249--265
 
 \bibitem[{Niu et~al(2012)Niu, Dy, and Ghahramani}]{Niu2012}
-Niu D, Dy JG, Ghahramani Z (2012) {A Nonparametric Bayesian Model for Multiple
-  Clustering with Overlapping Feature Views}. In: Proceedings of the 15th
+Niu D, Dy JG, Ghahramani Z (2012) A nonparametric {B}ayesian model for multiple
+  clustering with overlapping feature views. In: Proceedings of the 15th
   International Conference on Artificial Intelligence and Statistics, JMLR, pp
   814--822
 
 \bibitem[{Pavlidis et~al(2002)Pavlidis, Weston, Cai, and Noble}]{Pavlidis2002}
-Pavlidis P, Weston J, Cai J, Noble WS (2002) {Learning gene functional
-  classifications from multiple data types}. Journal of Computational Biology
+Pavlidis P, Weston J, Cai J, Noble WS (2002) Learning gene functional
+  classifications from multiple data types. Journal of Computational Biology
   9(2):401--411
 
 \bibitem[{Pellegrini et~al(1999)Pellegrini, Marcotte, Thompson, Eisenberg, and
   Yeates}]{Pellegrini1999a}
-Pellegrini M, Marcotte EM, Thompson MJ, Eisenberg D, Yeates TO (1999)
-  {Assigning protein functions by comparative genome analysis: protein
-  phylogenetic profiles.} Proceedings of the National Academy of Sciences of
-  the USA 96(8):4285--4288
+Pellegrini M, Marcotte EM, Thompson MJ, Eisenberg D, Yeates TO (1999) Assigning
+  protein functions by comparative genome analysis: protein phylogenetic
+  profiles. Proceedings of the National Academy of Sciences of the USA
+  96(8):4285--4288
 
 \bibitem[{Plummer et~al(2006)Plummer, Best, Cowles, and Vines}]{coda}
-Plummer M, Best N, Cowles K, Vines K (2006) Coda: Convergence diagnosis and
-  output analysis for mcmc. R News 6(1):7--11, {R} package version 0.18-1
+Plummer M, Best N, Cowles K, Vines K (2006) {CODA}: Convergence diagnosis and
+  output analysis for {MCMC}. R News 6(1):7--11
+
+\bibitem[{Plummer et~al(2015)Plummer, Best, Cowles, Vines, Sarkar, Bates,
+  Almond, and Magnusson}]{coda2015}
+Plummer M, Best N, Cowles K, Vines K, Sarkar D, Bates D, Almond R, Magnusson A
+  (2015) coda: Output analysis and diagnostics for {MCMC}. {R} package version
+  0.18-1 \url{http://cran.r-project.org/package=coda}
+
+\bibitem[{{R Core Team}(2016)}]{R}
+{R Core Team} (2016) R: A Language and Environment for Statistical Computing. R
+  Foundation for Statistical Computing, Vienna, Austria,
+  \urlprefix\url{https://www.R-project.org/}
 
 \bibitem[{Rasmussen(2000)}]{Rasmussen2000a}
-Rasmussen CE (2000) {The Infinite Gaussian Mixture Model}. In: Solla SA, Leen
+Rasmussen CE (2000) The infinite {G}aussian mixture model. In: Solla SA, Leen
   TK, M\"{u}ller K (eds) Advances in Neural Information Processing Systems 12,
   MIT Press, Cambridge, MA, pp 554--560
 
