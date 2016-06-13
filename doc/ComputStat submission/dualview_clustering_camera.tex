@@ -370,17 +370,19 @@ where the mean $\Muzu$ and the precision $\Szu$ are component parameters common 
 \Sk &\sim  \mathcal{W}\left( \betaoa, \left( \betaoa \Wo \right)^{-1}\right) 
 \label{eq:wishart_sar}
 \end{align}
-where the mean $\Muo$, the precision $\Ro$, the covariance $\Wo$, and the degrees of freedom $\betaoa$ are hyperparameters common to all components. The hyperparameters themselves are given non-informative priors centered at the observed data{\footnote{Note that the expectation of a random matrix drawn from a Wishart distribution $X \sim \mathcal{W}(\upsilon, W)$ is $\mathbb{E}[\mathbf{X}] = \mathbf{\upsilon W}$. Our parametrization of the Gamma distribution corresponds to a one-dimensional Wishart. Its density function is therefore given by $\mathcal{G}(\alpha, \beta) \propto
-x^{\alpha/2-1} \exp(-\frac{x}{2\beta})$
-and the expectation of a random scalar drawn from a Gamma distribution $x \sim \mathcal{G}(\alpha, \beta)$ is $\mathbb{E}[x] = \alpha\beta$.}}
+where the mean $\Muo$, the precision $\Ro$, the covariance $\Wo$, and the degrees of freedom $\betaoa$ are hyperparameters common to all components. The hyperparameters themselves are given non-informative priors centered at the observed data
 \begin{align}
 \Muo &\sim \mathcal{N}(\boldsymbol{\mu_a, \Sigma_a}) \\
 \Ro &\sim \mathcal{W}(D, (D \boldsymbol{\Sigma_a})^{-1})\\
 \Wo &\sim \mathcal{W}(D, \frac{1}{D} \boldsymbol{\Sigma_a})\\
 \frac{1}{\betaoa - D + 1} &\sim \mathcal{G}(1, \frac{1}{D}) \label{eq:gamma_ba0}
 \end{align}
-where $\boldsymbol{\mu_a}$ and $\boldsymbol{\Sigma_a}$ are the mean and covariance of all the features vectors and $\mathcal{G}$ is the Gamma distribution. Note that, as pointed out in \cite{Gorur2010}, this choice of hyperparameters, which is equivalent to scaling the data and using unit priors, makes the model invariant to translations, rotations, and rescaling of the data. 
+where $\boldsymbol{\mu_a}$ and $\boldsymbol{\Sigma_a}$ are the mean and covariance of all the features vectors and $\mathcal{G}$ is the Gamma distribution. 
+Note that the expectation of a random matrix drawn from a Wishart distribution $X \sim \mathcal{W}(\upsilon, W)$ is $\mathbb{E}[\mathbf{X}] = \mathbf{\upsilon W}$. Our parametrization of the Gamma distribution corresponds to a one-dimensional Wishart. Its density function is therefore given by $\mathcal{G}(\alpha, \beta) \propto
+x^{\alpha/2-1} \exp(-\frac{x}{2\beta})$
+and the expectation of a random scalar drawn from a Gamma distribution $x \sim \mathcal{G}(\alpha, \beta)$ is ${\mathbb{E}[x] = \alpha\beta}$. 
 
+As pointed out in \cite{Gorur2010}, this choice of hyperparameters, which is equivalent to scaling the data and using unit priors, makes the model invariant to translations, rotations, and rescaling of the data. 
 % Why these priors?
 Conjugate priors are chosen whenever possible to make the posteriors analytically accessible. As for $\betaoa$, the prior in Equation \ref{eq:gamma_ba0} guarantees that the degrees of freedom in the Wishart distribution in Equation~\ref{eq:wishart_sar} are greater than or equal to $D-1$. The density $p(\betaoa)$ is obtained by a simple transformation of variables (see Appendix).
 
