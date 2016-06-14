@@ -1,0 +1,89 @@
+\documentclass[]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{natbib} 
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{soul}
+\usepackage{hyperref}
+
+\usepackage{indentfirst} % indent first paragraph of section
+%opening
+
+\newcommand\todo[1]{\textcolor{red}{#1}}
+\newcommand\done[1]{\textcolor{red}{#1}}
+\newcommand\marie[1]{\textcolor{orange}{#1}}
+\newcommand\bert[1]{\textcolor{red}{#1}}
+\newcommand\julien[1]{\textcolor{green}{#1}}
+\newcommand\alberto[1]{\textcolor{cyan}{#1}}
+\newcommand\reply[1]{\textcolor{orange}{#1}}
+
+\title{Clustering over user features and latent behavioral functions with dual-view mixture models \\ \texttt{-Reviews-}}
+
+\author{}
+
+\begin{document}
+	\date{}
+	\maketitle
+	
+	Dear Editors,
+	
+	We thank you again for this final comments. We addressed all these in our final manuscript. We provide short answers below.
+	
+	\bigskip
+	\noindent
+	\textbf{List of detailed responses:}\\
+	(Q: editor comments.
+	A: authors replies.)
+	\subsection*{Editor-in-Chief}
+	
+	\vspace{3mm}	
+	 \textbf{Q1}: While my previous comments have been addressed, I noticed one more problem with a reference:
+
+\textit{
+Plummer M, Best N, Cowles K, Vines K (2006) Coda: Convergence diagnosis and output analysis for mcmc. RNews 6(1):7-11, R package version 0.18-1}
+
+These are actually 2 references (also note the proper capitalization of names):
+
+\textit{Plummer M, Best N, Cowles K, Vines K (2006) 
+CODA: Convergence diagnosis and output analysis for MCMC. R News 6(1):7-11.}
+
+and the current "coda" package from 2015, accessible at
+ 
+\url{https://cran.rproject.org/web/packages/coda/index.html}
+
+Both should be cited in the main text and reference list.
+Unfortunately, the "citation" information in R does not always
+get updated - so it is usually a good idea to check the
+information that is listed on the CRAN web site for a package.
+		
+\textcolor{blue}{\textbf{A1}: We have added both references.}
+	
+	\subsection*{Associate Editor}
+	I would like to thank the authors for making this further revision. I agree that the modified title would be more suitable.
+		\vspace{3mm}
+
+	\textbf{Q1}: Regarding the example with the iris dataset I would suggest to clarify if the variable Species was used as true cluster labels. 
+	
+\textcolor{blue}{\textbf{A1}: We have specified that Species is use as the label for our points}
+
+\vspace{3mm}
+
+	\textbf{Q2}: One could try to remove all footnotes and also use different point characters in Figures 3, 6 and 8.
+	
+\textcolor{blue}{\textbf{A2}: All footnotes have been removed and plot lines have now different point shapes as well}.
+
+\vspace{3mm}
+
+	\textbf{Q3}: A reference to R is still missing, see citation() in R.
+	
+\textcolor{blue}
+{\textbf{A3}: We have added the standard reference to R.}
+
+	
+
+	
+\end{document}
+
