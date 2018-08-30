@@ -1,4 +1,4 @@
-Dual Dirichlet Process - Gaussian Mixture Model
+Dual Dirichlet Process Gaussian Mixture Model
 =====
 
 Code for our paper
