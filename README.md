@@ -1,5 +1,14 @@
-Dual DP-GMM
+Dual Dirichlet Process - Gaussian Mixture Model
 =====
+
+Code for our paper
+
+**Non-parametric clustering over user features and latent behavioral functions with dual-view mixture models**<br>
+*Lumbreras A., Guégan M., Velcin J., Jouve B.*<br> 
+Computational Statistics (2016) 
+  
+
+## Notes
 
   * DP-GMM: default
   * fixed-GMM: set alpha=0 and dont sample it
